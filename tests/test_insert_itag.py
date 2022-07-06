@@ -4,6 +4,7 @@ from ptextpad.insert_itag import insert_itag
 
 itag = "|||"
 
+
 def test_insert_itag_special_cases():
     """Test insert_itag for some special casse."""
     text = "a\nbc"
