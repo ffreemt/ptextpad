@@ -1,0 +1,25 @@
+nose
+nltk
+    from para_gc import align_blocks_final
+        mypython\para_gc.py
+            from nltk.translate.gale_church import align_blocks
+lxml
+    \mypython\lists_to_tmx4n.py
+chardet poetry add
+    \mypython\sep_chinese.py
+        \mypython\chardet_file.py
+cchardet poetry add
+requests  mypython\fetch_xpath.py
+pandas poetry add mypython\csv_to_list.py
+python-docx
+    mypython\docx_to_txt.py
+html2text
+    mypython\epub_to_txt.py
+pysrt
+    mypython\srt_to_txt.py
+pysubs2
+    \mypython\load_zipped.py", line 22, in <module>
+        from srtass_to_txt import srtass_to_txt
+      File "C:\mypython\srtass_to_txt.py
+requests_cache
+    mypython\youdaoweb.py

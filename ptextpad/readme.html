@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Neualigner 0.6.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="nav-item nav-item-0"><a href="readme.html#document-readme">Neualigner 0.6.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-neualigner-howto">
+<h1>Welcome to Neualigner Howto<a class="headerlink" href="#welcome-to-neualigner-howto" title="Permalink to this headline">¶</a></h1>
+<p>Detailed documents will be furnished, soon. In the meantime, this Howto will hopefully get you started.</p>
+<p><strong>Note:</strong> This software is a continuous work in progress. If you have any suggestions and/or comments, please kindly let me know &#64;qq:41947782. You may join the Neualigner qq group 316287378 to obtain the latest version of Neualigner.</p>
+<div class="toctree-wrapper compound">
+<span id="document-intro"></span><div class="section" id="id1">
+<h2>用途<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>Neualigner是一款双语对齐软件。支持的导入文件格式包括段段csv、txt、xls、xlsx、tmx、双语自由混合格式、字幕srt/ass格式及单语pdf、docx、epub、xml、html、htm以及Zip压缩过的txt、csv、xml、html、htm。 Neualigner可导出csv、txt、xlsx及tmx格式。</p>
+</div>
+<div class="section" id="id2">
+<h2>设计理念<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>Neualigner将对齐分成两步：段段“打钉”及句句对齐。段段层面上的打钉操作可以加速第二步的自动句句对齐的速度及质量。 Neualigner支持自动“打钉”，也可以手动打钉。</p>
+</div>
+<div class="section" id="id3">
+<h2>0.6.3版（2017-03-08）<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>新增载入pdf格式文件功能</li>
+<li>修正0.6.2版双语单文件打钉Bug</li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h2>0.6.2版（2017-02-25）<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>新增选定行后句句对齐（类似Abbyy Aligner的F5快捷键）</li>
+<li>新增手动打钉时选好行后可按空格快捷键将行号数送至LRow#、RRow#（无需键入数字）即可用回车快捷键打钉（无需用鼠标点击打钉钮）</li>
+</ul>
+<p>请参看基本用法示范里第18、19条。</p>
+</div>
+<div class="section" id="id5">
+<h2>0.6版<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>新增直接获取双语网页打钉对齐</li>
+<li>新增多行删除及打钉指标值置0置1</li>
+</ul>
+<p>请参看基本用法示范里第15、16、17条。</p>
+</div>
+<div class="section" id="id6">
+<h2>主要功能<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>简约图形界面</li>
+<li>直接编辑，支持常用快捷键（如Ctrl+C拷贝、Ctrl+X、Ctrl+V、Ctrl+A、 Ctrl+Z等等）</li>
+<li>打钉</li>
+<li>各种快捷键（移动，合并，拆分等）</li>
+<li>选择性对齐</li>
+<li>导入/导出tmx记忆库格式文件</li>
+</ul>
+</div>
+<div class="section" id="id7">
+<h2>主要术语<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>卡（Tab）： 图形界面含四个卡。</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>文件卡（File tab）用于编辑文件用。</li>
+<li>段卡（Para tab）亦名打钉卡（Anchor tab）用于打钉操作。</li>
+<li>句卡（Sent tab）用于检查句句对齐的结果及必要时进行微调。</li>
+<li>日志卡（Log tab）里可查看程序运行的状态及各种信息（如输出文件的位置等）。</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>指标（Merit）</li>
+</ul>
+<p>段卡的第三列里用于显示对齐质量的数字。大于零表示左右两段被打钉定位。</p>
+<div class="section" id="neualigner">
+<h3>Neualigner基本操作示范<a class="headerlink" href="#neualigner" title="Permalink to this headline">¶</a></h3>
+<p>下面以Folding_Beijing_ch1-en.txt和Folding_Beijing_ch1-zh.txt两个文件示范各步的操作。启动Neualigner beta。</p>
+</div>
+</div>
+<div class="section" id="id8">
+<h2>载入<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>点击载入左边的源文件（快捷键Ctrl-1）</li>
+</ol>
+<a class="reference internal image-reference" href="_images/loadfile1.png"><img alt="载入源文件" class="align-center" src="_images/loadfile1.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="2">
+<li>点击载入右边的目标文件（快捷键Ctrl-2）</li>
+</ol>
+<a class="reference internal image-reference" href="_images/loadfile2.png"><img alt="载入目标文件" class="align-center" src="_images/loadfile2.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id9">
+<h2>“打钉”、除钉<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="3">
+<li>点击自动“打钉”（快捷键Ctrl-A）</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchors.png"><img alt="打钉" class="align-center" src="_images/setanchors.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="4">
+<li>自动打钉完成后，程序会自动切换至手动打钉卡SetAnchor Tab。同时一些质量比较好的段段对齐会被标出来。</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortab.png"><img alt="打钉Tab" class="align-center" src="_images/setanchortab.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="5">
+<li>第三列的指标可直接输入进行人工打钉或除钉</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortabcol3.png"><img alt="打钉Tab第三列" class="align-center" src="_images/setanchortabcol3.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="6">
+<li>错位的对应段可在打钉卡SetAnchor Tab的顶部设置。如下图的左10行（LRow#=10）和右9行（RRow#=9）是对应的。</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortabmisaligned.png"><img alt="打钉Tab顶部" class="align-center" src="_images/setanchortabmisaligned.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="7">
+<li>输入行号和指标值后点击“Set Anchor”键。</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortabtop.png"><img alt="打钉Tab手动打钉" class="align-center" src="_images/setanchortabtop.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="8">
+<li>打钉完成。被打钉行的上下行亦被调整。</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortab_complete.png"><img alt="打钉Tab手动打钉完成" class="align-center" src="_images/setanchortab_complete.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="9">
+<li>搜索其他需要调整的地方进行打钉。</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortab_etal.png"><img alt="打钉Tab其他" class="align-center" src="_images/setanchortab_etal.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id10">
+<h2>分拆<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic" start="10">
+<li><p class="first">分拆： 手动编辑或用快键 Ctrl+S</p>
+<p>有时目标译文合并了对应原文的两段或多段。此时则需要对单元进行手动编辑，或用快捷键Ctrl+S。</p>
+</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortab_edit.png"><img alt="打钉Tab编辑" class="align-center" src="_images/setanchortab_edit.png" style="width: 500px;" /></a>
+<ol class="arabic simple" start="11">
+<li>分拆完成</li>
+</ol>
+<a class="reference internal image-reference" href="_images/setanchortab_editcomplete.png"><img alt="打钉Tab编辑完成" class="align-center" src="_images/setanchortab_editcomplete.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id11">
+<h2>导出打过钉的段<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="12">
+<li>导出打过钉的段</li>
+</ol>
+<blockquote>
+<div>在菜单里选File，再选Export Paras（导出段）。可在记录标Log里查看文件位置。</div></blockquote>
+<a class="reference internal image-reference" href="_images/setanchortabexport.png"><img alt="打钉Tab导出" class="align-center" src="_images/setanchortabexport.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="csvtxtxlsxlsxtmx">
+<h2>导入csv、txt、xls、xlsx、tmx文件<a class="headerlink" href="#csvtxtxlsxlsxtmx" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="13">
+<li>导入csv、txt、xls、xlsx、tmx文件至段卡（打钉卡Anchor Tab）</li>
+</ol>
+<p>在菜单里选File，再选Import Paras（导入段）</p>
+<a class="reference internal image-reference" href="_images/import_to_paras.png"><img alt="导入段" class="align-center" src="_images/import_to_paras.png" style="width: 500px;" /></a>
+<p>导入的csv、txt、xls、xlsx至少需含两列，第三列可选。</p>
+</div>
+<div class="section" id="id12">
+<h2>载入双语混合文件<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="14">
+<li>载入双语混合文件</li>
+</ol>
+<p>目标语言文件为空时，源语言文件被视为双语混合文件。</p>
+<a class="reference internal image-reference" href="_images/sep_chinese1.png"><img alt="载入双语混合文件" class="align-center" src="_images/sep_chinese1.png" style="width: 500px;" /></a>
+<p>自动打钉操作（<a class="reference internal" href="_images/setanchorbut.png"><img alt="setanchorbut" src="_images/setanchorbut.png" style="width: 20pt;" /></a>）此时为分离操作。点击自动打钉（<a class="reference internal" href="_images/setanchorbut.png"><img alt="setanchorbut" src="_images/setanchorbut.png" style="width: 20pt;" /></a>）键后，转打钉卡查看分离的中英文。</p>
+<a class="reference internal image-reference" href="_images/sep_chinese2.png"><img alt="双语混合文件分离" class="align-center" src="_images/sep_chinese2.png" style="width: 500px;" /></a>
+<p>下一步可以手动打钉，然后点击对齐键（<a class="reference internal" href="_images/alignbut.png"><img alt="alignbut" src="_images/alignbut.png" style="width: 20pt;" /></a>）后在句卡里查看对齐结果及导出记忆库tmx文件。</p>
+</div>
+<div class="section" id="xpath">
+<h2>导入网页（可选xpath）<a class="headerlink" href="#xpath" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="15">
+<li>导入网页（可选xpath）</li>
+</ol>
+<p>选菜单里File、Import URL/Xpath。Pagefetcher弹出。如下图。</p>
+<a class="reference internal image-reference" href="_images/import_urlxpath.png"><img alt="Pagefetcher弹出" class="align-center" src="_images/import_urlxpath.png" style="width: 500px;" /></a>
+<p>输入网址及Xpath后点击Go。（如不知道如何设置xpath，可设为空。）稍候片刻后，双语文本出现在Pagefetcher。</p>
+<a class="reference internal image-reference" href="_images/url_go.png"><img alt="输入网址及Xpath后点击Go" class="align-center" src="_images/url_go.png" style="width: 500px;" /></a>
+<p>再点击最下面的Send to Anchor tab and close this page。双语内容被分离并送至Anchor tab。做一些打钉调整后就可以句句对齐及导出tmx记忆库。如下图。</p>
+<a class="reference internal image-reference" href="_images/url-result.png"><img alt="双语内容被分离" class="align-center" src="_images/url-result.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id13">
+<h2>批量删除行<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="16">
+<li>批量删除行</li>
+</ol>
+<p>在未选择行的情况下，删除键（<a class="reference internal" href="_images/delbut.png"><img alt="delbut" src="_images/delbut.png" style="width: 20pt;" /></a>）删除当前行。</p>
+<a class="reference internal image-reference" href="_images/delete1.png"><img alt="删除键" class="align-center" src="_images/delete1.png" style="width: 500px;" /></a>
+<p>如需删除多行，则可以用鼠标点击左边的行数目字，可用Ctrl+加点击多选独立的行或Shift+加点击选连续的多行。然后点击删除键。</p>
+<a class="reference internal image-reference" href="_images/delete3.png"><img alt="多选删除" class="align-center" src="_images/delete3.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id14">
+<h2>批量设置对齐指标数<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="17">
+<li>批量设置对齐指标数</li>
+</ol>
+<p>同样，在没有选择行的情况下，指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）只对当前行生效。而在Ctrl+加点击多选独立的行或Shift+加点击选连续的多行后，点击指标设置键会将选择了的行置0或1。</p>
+<a class="reference internal image-reference" href="_images/batchmerits.png"><img alt="多选设置对齐指标" class="align-center" src="_images/batchmerits.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id15">
+<h2>选定多行后句句对齐<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="18">
+<li>选定多行后句句对齐</li>
+</ol>
+<p>句句对齐后有时需要微调。可选定几行：鼠标拉选行号或点击一行后再按住Shift或Control键点击选定数行， 如下图：</p>
+<a class="reference internal image-reference" href="_images/selected_rows_align1a.png"><img alt="选定多行" class="align-center" src="_images/selected_rows_align1a.png" style="width: 500px;" /></a>
+<p>再点击对齐键（<a class="reference internal" href="_images/alignbut.png"><img alt="alignbut" src="_images/alignbut.png" style="width: 20pt;" /></a>），Neualigner将重新处理选定行的句句对齐：</p>
+<a class="reference internal image-reference" href="_images/selected_rows_align2a.png"><img alt="选定多行句句对齐" class="align-center" src="_images/selected_rows_align2a.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="id16">
+<h2>空格键行数上屏及回车键设置打钉<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="19">
+<li>空格键行数上屏及回车键设置打钉</li>
+</ol>
+<p>手动打钉时需要手动输入行号数，此时可以利用空格键直接选定LRow# 和 RRow#，如下图，先用鼠标点击选好一个表单元（第2行左列），再按住Control点击鼠标选定另一个表单元（第3行右列）。</p>
+<a class="reference internal image-reference" href="_images/tap_row_numbers1a.png"><img alt="选定表单元" class="align-center" src="_images/tap_row_numbers1a.png" style="width: 500px;" /></a>
+<p>按下空格键后LRow# 和 RRow#处就被赋了2、3，如下图：</p>
+<a class="reference internal image-reference" href="_images/tap_row_numbers2a1.png"><img alt="按下空格键" class="align-center" src="_images/tap_row_numbers2a1.png" style="width: 500px;" /></a>
+<p>确定指标值（Merit）无误即可按下回车键完成打钉操作，如下图：</p>
+<a class="reference internal image-reference" href="_images/tap_row_numbers3a.png"><img alt="回车键完成打钉操作" class="align-center" src="_images/tap_row_numbers3a.png" style="width: 500px;" /></a>
+<div class="section" id="id17">
+<h3>使用案例及操作示范<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+</div>
+</div>
+<div class="section" id="id18">
+<h2>英中双语单文件<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h2>
+<p>以双语《呼啸山庄》第一章为例。（Wuthering_Heights_ch1_zh-en.txt 文件可以在程序目录里的 test_filesfiles_for_testing_load目录里找到。）</p>
+<blockquote>
+<div><p>呼啸山庄</p>
+<p>艾米莉·勃朗特</p>
+<p>第一章</p>
+<p>一八○一年。我刚刚拜访……
+……比起来是多么擅长交际啊，这可真是惊人。</p>
+<p>Wuthering Heights</p>
+<p>Emily Bront</p>
+<p>Chapter 1</p>
+<p>1801—I have just returned...
+...astonishing how sociable I feel myself compared with him.</p>
+</div></blockquote>
+<p>此例模拟章章对照的双语资料。段段对照的双语资料以此类推。</p>
+<p>首先启动Neualigner。</p>
+<ul class="simple">
+<li>载入文件</li>
+</ul>
+<p>点击载入文件1（快捷键Ctrl+1），文件2留空，点击自动打钉操作（<a class="reference internal" href="_images/setanchorbut.png"><img alt="setanchorbut" src="_images/setanchorbut.png" style="width: 20pt;" /></a>），Neualigner会对双语文件做分离处理。</p>
+<a class="reference internal image-reference" href="_images/usecase1loading.png"><img alt="载入文件" class="align-center" src="_images/usecase1loading.png" style="width: 500px;" /></a>
+<ul class="simple">
+<li>自动打钉</li>
+</ul>
+<p>自动打钉的结果并不理想。（自动打钉键在单文件双语载入时是做分离键使用的。）</p>
+<a class="reference internal image-reference" href="_images/usecase1autoanchor.png"><img alt="自动打钉" class="align-center" src="_images/usecase1autoanchor.png" style="width: 500px;" /></a>
+<p>我们用手动打钉。</p>
+<ul>
+<li><p class="first">手工打钉（微调）</p>
+<blockquote>
+<div><ul class="simple">
+<li>下猛药大幅调节，按空格将行数上屏</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>先点击选定第3行左列。再按空格键。“3”被置入LRow处。</p>
+<a class="reference internal image-reference" href="_images/usecase1LRow3.png"><img alt="第3行左列" class="align-center" src="_images/usecase1LRow3.png" style="width: 500px;" /></a>
+<p>滚动到英文处的Chapter 1处。点击选定第27行右列。再按空格键。“27”被置入RRow处。</p>
+<a class="reference internal image-reference" href="_images/usecase1RRow27.png"><img alt="第27行右列" class="align-center" src="_images/usecase1RRow27.png" style="width: 500px;" /></a>
+<p>Merit置为1。</p>
+<a class="reference internal image-reference" href="_images/usecase1Merit1.png"><img alt="第27行右列" class="align-center" src="_images/usecase1Merit1.png" style="width: 500px;" /></a>
+<p>按回车键对3-27进行打钉后：</p>
+<a class="reference internal image-reference" href="_images/usecase13-27.png"><img alt="进行3-27打钉" class="align-center" src="_images/usecase13-27.png" style="width: 500px;" /></a>
+<p>往下滚动到27行处。选定左右表单元（先点击28行左列，再按住Ctrl键点击27行右列），再按空格键。27、28上屏：</p>
+<a class="reference internal image-reference" href="_images/usecase28-27.png"><img alt="进行28-27打钉" class="align-center" src="_images/usecase28-27.png" style="width: 500px;" /></a>
+<ul class="simple">
+<li>回车打钉</li>
+</ul>
+<p>按回车键打钉：</p>
+<a class="reference internal image-reference" href="_images/usecase28anchor.png"><img alt="进行28-28打钉" class="align-center" src="_images/usecase28anchor.png" style="width: 500px;" /></a>
+<ul class="simple">
+<li>固定已经对好的段落</li>
+</ul>
+<p>可以看到，第29行已经对好，可以顺便点击指标开关键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）打钉。</p>
+<a class="reference internal image-reference" href="_images/usecase29anchor.png"><img alt="进行29-29打钉" class="align-center" src="_images/usecase29anchor.png" style="width: 500px;" /></a>
+<ul class="simple">
+<li>句句对齐</li>
+</ul>
+<p>点击对齐键（<a class="reference internal" href="_images/alignbut.png"><img alt="alignbut" src="_images/alignbut.png" style="width: 20pt;" /></a>)句句对齐。完成后会自动跳至句卡（Sents Tab）。滚动目测一下可以发现92行处的脚注导致从第84行开始的位移。</p>
+<a class="reference internal image-reference" href="_images/usecase1footnote.png"><img alt="脚注导致位移" class="align-center" src="_images/usecase1footnote.png" style="width: 500px;" /></a>
+<p>先合并（Mergeup）左列的83、84行、再删除84行：</p>
+<a class="reference internal image-reference" href="_images/usecase1row83-84merge.png"><img alt="合并83、84行" class="align-center" src="_images/usecase1row83-84merge.png" style="width: 500px;" /></a>
+<p>将【You might as well leave a stranger with a brood of tigers!&#8217;】一句上移至行号小于含脚注的行号。并删掉一些重复的句子。</p>
+<a class="reference internal image-reference" href="_images/usecase1rowfoornoteadj.png"><img alt="含脚注的行号" class="align-center" src="_images/usecase1rowfoornoteadj.png" style="width: 500px;" /></a>
+<p>先点击行号85，在按住Ctrl后点击行号89，选定85-89行</p>
+<a class="reference internal image-reference" href="_images/usecase1rowfoornote85-89.png"><img alt="选定85-89行" class="align-center" src="_images/usecase1rowfoornote85-89.png" style="width: 500px;" /></a>
+<p>点击对齐键（<a class="reference internal" href="_images/alignbut.png"><img alt="alignbut" src="_images/alignbut.png" style="width: 20pt;" /></a>）选择性对齐85-89行</p>
+<ul class="simple">
+<li>导出tmx记忆库</li>
+</ul>
+</div>
+<div class="section" id="id19">
+<h2>直接从网页剪贴源语言文本及目标语言文本：2016年美国的人权纪录<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h2>
+<p>2016年美国的人权纪录，英文版网址：<a class="reference external" href="http://wap.chinadaily.com.cn/2017-03/10/content_28501838.htm">http://wap.chinadaily.com.cn/2017-03/10/content_28501838.htm</a>。 中文版网址：<a class="reference external" href="http://www.chinanews.com/gn/2017/03-09/8169614.shtml">http://www.chinanews.com/gn/2017/03-09/8169614.shtml</a>。</p>
+<p>启动Neualigner。</p>
+<ul>
+<li><dl class="first docutils">
+<dt>在文件卡（Filel tab）左列贴入源语言文本</dt>
+<dd><p class="first">在浏览器里打开（2016年美国的人权纪录英文版） <a class="reference external" href="http://wap.chinadaily.com.cn/2017-03/10/content_28501838.htm">http://wap.chinadaily.com.cn/2017-03/10/content_28501838.htm</a>, 点击中文、Ctrl+A、Ctrl+C 将所有文本拷入系统剪贴板。双击Neualigner的文件卡左列，Ctrl+V贴入系统剪贴板里的文本。除正文外会有一些别乱七八糟的东西，无需理会。我们在打钉时一并处理。</p>
+<p class="last">在文件卡（Files tab）右列贴入目标语言文本。
+同样，在Neualigner的文件卡右列贴入人权纪录中文版网页 <a class="reference external" href="http://www.chinanews.com/gn/2017/03-09/8169614.shtml">http://www.chinanews.com/gn/2017/03-09/8169614.shtml</a> 内容。</p>
+</dd>
+</dl>
+</li>
+</ul>
+<a class="reference internal image-reference" href="_images/usecase2filetab.png"><img alt="文件卡" class="align-center" src="_images/usecase2filetab.png" style="width: 500px;" /></a>
+<ul>
+<li><dl class="first docutils">
+<dt>点击打钉键(<a class="reference internal" href="_images/setanchorbut.png"><img alt="setanchorbut" src="_images/setanchorbut.png" style="width: 20pt;" /></a>)（快捷键Ctrl+A）</dt>
+<dd><p class="first">跳出的对话框选择No。（网页里有很多别的乱七八糟的东西，自动打钉效果可能不好。选Yes试试自动打钉也没什么问题。）</p>
+<a class="reference internal image-reference" href="_images/usecase2autoanchoringno.png"><img alt="打钉键" class="align-center" src="_images/usecase2autoanchoringno.png" style="width: 500px;" /></a>
+<p>Neualigner跳到打钉卡（SetAnch tab）：</p>
+<a class="last reference internal image-reference" href="_images/usecase2setanchortab.png"><img alt="打钉卡" class="align-center" src="_images/usecase2setanchortab.png" style="width: 500px;" /></a>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>手动打钉</dt>
+<dd><p class="first">找到英文的正文标题“Human Rights Record of the United States in 2016”，点击6行左列选定，再按空格键。6字上屏。</p>
+<a class="reference internal image-reference" href="_images/usecase2setleft6.png"><img alt="6字上屏" class="align-center" src="_images/usecase2setleft6.png" style="width: 500px;" /></a>
+<p>同样，找到中文的正文标题“2016年美国的人权纪录”，点击11行右列选定，再按空格键。11字上屏。同时将指标数Merit设为1.</p>
+<a class="reference internal image-reference" href="_images/usecase2setright11.png"><img alt="11字上屏" class="align-center" src="_images/usecase2setright11.png" style="width: 500px;" /></a>
+<p>按回车键或点击指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）进行手动打钉操作。Neualigner调整对齐后：</p>
+<a class="reference internal image-reference" href="_images/usecase2manualsetanchor.png"><img alt="手动打钉操作" class="align-center" src="_images/usecase2manualsetanchor.png" style="width: 500px;" /></a>
+<p>滚动到英文正文结尾59行处。（可参考原网页文本。）选定左列，按空格键，59上屏。</p>
+<a class="reference internal image-reference" href="_images/usecase2setleft59.png"><img alt="59上屏" class="align-center" src="_images/usecase2setleft59.png" style="width: 500px;" /></a>
+<p>滚动到英文正文结尾157行处。（可参考原网页文本。原中文网页含“2016年美国侵犯人权事记”）选定左列，按空格键，157上屏。</p>
+<a class="reference internal image-reference" href="_images/usecase2setright157.png"><img alt="157上屏" class="align-center" src="_images/usecase2setright157.png" style="width: 500px;" /></a>
+<p>按回车键或点击指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）进行手动打钉操作。Neualigner调整对齐后：</p>
+<a class="reference internal image-reference" href="_images/usecase2manualsetanchor157.png"><img alt="手动打钉操作" class="align-center" src="_images/usecase2manualsetanchor157.png" style="width: 500px;" /></a>
+<p>点击行号158，下滚到末尾，按Shift点击行号401，选定158行至401行：</p>
+<a class="reference internal image-reference" href="_images/usecase2select158_401.png"><img alt="选定158行至401行" class="align-center" src="_images/usecase2select158_401.png" style="width: 500px;" /></a>
+<p>点击删除键（<a class="reference internal" href="_images/delbut.png"><img alt="delbut" src="_images/delbut.png" style="width: 20pt;" /></a>）删除158行至401行：</p>
+<a class="reference internal image-reference" href="_images/usecase2rows58_401deleted.png"><img alt="删除158行至401行" class="align-center" src="_images/usecase2rows58_401deleted.png" style="width: 500px;" /></a>
+<p>稍微目测一下发现，第五节（147行）、第六节（153行）很幸运地已经对好，点击147行的左列单元或右列单元再点击指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）打钉；点击153行的左列单元或右列单元再点击指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）打钉：</p>
+<a class="reference internal image-reference" href="_images/usecase2manualanchorrows147_153.png"><img alt="删除158行至401行" class="align-center" src="_images/usecase2manualanchorrows147_153.png" style="width: 500px;" /></a>
+<p>中文第四节末尾有多个尾注。有必要在英文第四节正文尾个中文第四节正文尾打一个钉，以免尾注干扰下一步的句句对齐。点击选定第146行左列单元，按空格146上屏。滚动到125行，点击选定第125行右列单元，按空格125上屏。按回车键或点击指标设置键（<a class="reference internal" href="_images/setmerits.png"><img alt="setmerits" src="_images/setmerits.png" style="width: 20pt;" /></a>）进行手动打钉操作。Neualigner调整对齐后：</p>
+<a class="reference internal image-reference" href="_images/usecase2manualanchorrows146_125.png"><img alt="手动打钉操作" class="align-center" src="_images/usecase2manualanchorrows146_125.png" style="width: 500px;" /></a>
+<p>同样，在第四节标题及第三节正文末打钉消除尾注对句句对齐的干扰。</p>
+<a class="reference internal image-reference" href="_images/usecase2section3section4.png"><img alt="第四节标题及第三节正文末" class="align-center" src="_images/usecase2section3section4.png" style="width: 500px;" /></a>
+<p>对其他节末的尾注做同样打钉处理。</p>
+<p>最后，由于中文里含目录而英文并无目录。因此需在中文目录前后打钉处理。可在英文“Forward“和中文“前言”之间打一个钉，再在英文“March 2017”和“中文2017年3月”之间打一个钉。Neualigner调整对齐后：</p>
+<a class="reference internal image-reference" href="_images/usecase2manualanchortoc.png"><img alt="中文目录前后打钉" class="align-center" src="_images/usecase2manualanchortoc.png" style="width: 500px;" /></a>
+<p class="last">至此，打钉完成。可删掉正文前的东西及尾注。</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">点击对齐键（<a class="reference internal" href="_images/alignbut.png"><img alt="alignbut" src="_images/alignbut.png" style="width: 20pt;" /></a>） 句句对齐</p>
+</li>
+<li><p class="first">选择数行后重新句句对齐</p>
+</li>
+<li><p class="first">导出</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="readme.html#document-readme">Table Of Contents</a></h3>
+  <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#document-intro">用途</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id2">设计理念</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id3">0.6.3版（2017-03-08）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id4">0.6.2版（2017-02-25）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id5">0.6版</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id6">主要功能</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id7">主要术语</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#neualigner">Neualigner基本操作示范</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id8">载入</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id9">“打钉”、除钉</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id10">分拆</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id11">导出打过钉的段</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#csvtxtxlsxlsxtmx">导入csv、txt、xls、xlsx、tmx文件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id12">载入双语混合文件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#xpath">导入网页（可选xpath）</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id13">批量删除行</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id14">批量设置对齐指标数</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id15">选定多行后句句对齐</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id16">空格键行数上屏及回车键设置打钉</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="readme.html#id17">使用案例及操作示范</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id18">英中双语单文件</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#id19">直接从网页剪贴源语言文本及目标语言文本：2016年美国的人权纪录</a></li>
+</ul>
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="nav-item nav-item-0"><a href="readme.html#document-readme">Neualigner 0.6.3 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

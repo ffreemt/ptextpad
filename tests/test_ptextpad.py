@@ -1,7 +1,6 @@
 """Test ptextpad."""
 # pylint: disable=broad-except
-from ptextpad import __version__
-from ptextpad import ptextpad
+from ptextpad import __version__, ptextpad
 
 
 def test_version():

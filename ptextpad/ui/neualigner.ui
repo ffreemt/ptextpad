@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1554</width>
+    <height>749</height>
+   </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>946</width>
+    <height>717</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>false</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>2</number>
+      </property>
+      <widget class="QWidget" name="tab_1">
+       <attribute name="title">
+        <string>Files</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="MyTable" name="tableView_1"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>SetAnchor</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_lrow">
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>LRow#</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_lrow">
+              <property name="minimumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_rrow">
+              <property name="minimumSize">
+               <size>
+                <width>30</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>30</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>RRow#</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_rrow">
+              <property name="minimumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_merit">
+              <property name="minimumSize">
+               <size>
+                <width>45</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>45</width>
+                <height>16</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>Merit</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="lineEdit_merit">
+              <property name="minimumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>45</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>14</pointsize>
+               </font>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="setAnchorButton">
+              <property name="minimumSize">
+               <size>
+                <width>120</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>120</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Set Anchor</string>
+              </property>
+              <property name="icon">
+               <iconset>
+                <normaloff>images/Caliper-50.png</normaloff>
+                <normalon>images/Caliper-50.png</normalon>images/Caliper-50.png</iconset>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="dispLabel">
+            <property name="minimumSize">
+             <size>
+              <width>260</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>400</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>LRow#:       RRow#:       Merit:       </string>
+            </property>
+            <property name="margin">
+             <number>5</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="MyTable" name="tableView_2"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Sents</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="MyTable" name="tableView_3"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4">
+       <attribute name="title">
+        <string>Log</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QPlainTextEdit" name="plainTextEditLog"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1554</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionFile1"/>
+    <addaction name="actionFile2"/>
+    <addaction name="separator"/>
+    <addaction name="actionExport_Paras"/>
+    <addaction name="actionExport_Sents"/>
+    <addaction name="actionExport_TMX"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport_Paras"/>
+    <addaction name="actionImport_Csv"/>
+    <addaction name="actionImport_TMX"/>
+    <addaction name="actionImport_URL_Xpath"/>
+    <addaction name="separator"/>
+    <addaction name="actionQexit"/>
+   </widget>
+   <widget class="QMenu" name="menuAlign">
+    <property name="title">
+     <string>Align</string>
+    </property>
+    <addaction name="actionAnchor"/>
+    <addaction name="actionAlign"/>
+    <addaction name="separator"/>
+    <addaction name="actionMerit_0_or_1"/>
+    <addaction name="actionSet_Row_Numbers"/>
+    <addaction name="actionSet_Anchor"/>
+    <addaction name="actionDelete_rows"/>
+    <addaction name="separator"/>
+    <addaction name="actionMovedown"/>
+    <addaction name="actionMoveup"/>
+    <addaction name="actionMergedown"/>
+    <addaction name="actionMergeup"/>
+    <addaction name="actionBreak"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionManual"/>
+    <addaction name="actionAbout"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuAlign"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="separator"/>
+   <addaction name="actionFile1"/>
+   <addaction name="actionFile2"/>
+   <addaction name="actionAnchor"/>
+   <addaction name="actionAlign"/>
+   <addaction name="separator"/>
+   <addaction name="actionMerit_0_or_1"/>
+   <addaction name="separator"/>
+   <addaction name="actionDelete_rows"/>
+   <addaction name="actionMovedown"/>
+   <addaction name="actionMoveup"/>
+   <addaction name="actionMergedown"/>
+   <addaction name="actionMergeup"/>
+   <addaction name="actionBreak"/>
+   <addaction name="separator"/>
+   <addaction name="actionQexit"/>
+  </widget>
+  <action name="actionFile1">
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images/fileopen1.png</normaloff>images/fileopen1.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load Source File</string>
+   </property>
+   <property name="iconText">
+    <string>Load Source File</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Source File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+1</string>
+   </property>
+  </action>
+  <action name="actionFile2">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/open1/images/fileopen.png</normaloff>:/open1/images/fileopen.png</iconset>
+   </property>
+   <property name="text">
+    <string>Load Target File</string>
+   </property>
+   <property name="iconText">
+    <string>Load Target File</string>
+   </property>
+   <property name="toolTip">
+    <string>Load Target File</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="actionAnchor">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Anchor-48.png</normaloff>images/Anchor-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Auto Anchor</string>
+   </property>
+   <property name="toolTip">
+    <string>Generate Anchors</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionQexit">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Exit-48.png</normaloff>images/Exit-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="actionPara_to_para">
+   <property name="text">
+    <string>Para to para</string>
+   </property>
+  </action>
+  <action name="actionSent_to_sent">
+   <property name="text">
+    <string>Sent to sent</string>
+   </property>
+  </action>
+  <action name="actionManual">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Help-48.png</normaloff>images/Help-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Manual</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Info-48.png</normaloff>images/Info-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionPlus">
+   <property name="icon">
+    <iconset resource="resource.qrc">
+     <normaloff>:/add/images/editadd.png</normaloff>:/add/images/editadd.png</iconset>
+   </property>
+   <property name="text">
+    <string>Plus</string>
+   </property>
+   <property name="toolTip">
+    <string>+</string>
+   </property>
+  </action>
+  <action name="actionAlign">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Line Chart-48.png</normaloff>images/Line Chart-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Align</string>
+   </property>
+   <property name="toolTip">
+    <string>Align</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionExport_Paras">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images/CSV-50.png</normaloff>images/CSV-50.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Paras</string>
+   </property>
+  </action>
+  <action name="actionExport_Sents">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/CSV-48.png</normaloff>images/CSV-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export Sents</string>
+   </property>
+   <property name="iconText">
+    <string>Export CSV</string>
+   </property>
+  </action>
+  <action name="actionExport_TMX">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/filesavetmx.png</normaloff>images/filesavetmx.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export TMX</string>
+   </property>
+  </action>
+  <action name="actionMoveup">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Up-48.png</normaloff>images/Up-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Moveup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="actionMovedown">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Down-48.png</normaloff>images/Down-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Movedown</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
+   </property>
+  </action>
+  <action name="actionMergeup">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/mergeup.png</normaloff>images/mergeup.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mergeup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionMergedown">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/mergedown.png</normaloff>images/mergedown.png</iconset>
+   </property>
+   <property name="text">
+    <string>Mergedown</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionBreak">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Split Vertical-48.png</normaloff>images/Split Vertical-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Break</string>
+   </property>
+   <property name="toolTip">
+    <string>Break |||</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="actionMerit_0_or_1">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/SwitchOn-50.png</normaloff>images/SwitchOn-50.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set Merits(0 or 1)</string>
+   </property>
+   <property name="toolTip">
+    <string>Set merit to 0 or 1</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="actionImport_Paras">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Multiple Inputs-48.png</normaloff>images/Multiple Inputs-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import Paras</string>
+   </property>
+  </action>
+  <action name="actionImport_Csv">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Import CSV</string>
+   </property>
+   <property name="iconText">
+    <string>Import CSV</string>
+   </property>
+   <property name="toolTip">
+    <string>Import CSV</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionImport_TMX">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Import TMX</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
+   </property>
+  </action>
+  <action name="actionDelete_rows">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Delete Table-48.png</normaloff>images/Delete Table-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Rows</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete selected rows</string>
+   </property>
+  </action>
+  <action name="actionImport_URL_Xpath">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/WWW-48.png</normaloff>images/WWW-48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Import URL Xpath</string>
+   </property>
+  </action>
+  <action name="actionSet_Anchor">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Caliper-50.png</normaloff>images/Caliper-50.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set Anchor</string>
+   </property>
+   <property name="shortcut">
+    <string>Return</string>
+   </property>
+  </action>
+  <action name="actionSet_Row_Numbers">
+   <property name="icon">
+    <iconset>
+     <normaloff>images/Circled 8 -48.png</normaloff>images/Circled 8 -48.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set Row Numbers</string>
+   </property>
+   <property name="shortcut">
+    <string>Space</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MyTable</class>
+   <extends>QTableView</extends>
+   <header location="global">ptextpad.mytable</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>tableView_2</tabstop>
+  <tabstop>tableView_3</tabstop>
+ </tabstops>
+ <resources>
+  <include location="resource.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>actionQexit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>504</x>
+     <y>366</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionPlus</sender>
+   <signal>triggered()</signal>
+   <receiver>actionAlign</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

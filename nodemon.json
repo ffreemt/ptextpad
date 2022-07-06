@@ -15,6 +15,7 @@
     "test/samples/"
   ],
   "env": {
+    "LOGLEVEL": 10,
     "NODE_ENV": "development"
   },
   "ext": "js json py"

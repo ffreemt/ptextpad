@@ -1,0 +1,8 @@
+<RCC>
+  <qresource prefix="add">
+    <file>images/editadd.png</file>
+  </qresource>
+  <qresource prefix="open1">
+    <file>images/fileopen.png</file>
+  </qresource>
+</RCC>
