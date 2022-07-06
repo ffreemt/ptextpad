@@ -39,12 +39,10 @@ def test_htm():
 
 
 def test_ass():
-    """
-    Test ass
-    """
-    filepath = r"C:\dl\Dropbox\mat-dir\pyqt\Sandbox\test_files"
-    r"\files_for_testing_load"
-    "\The.Big.Bang.Theory.S10E15.720p.HDTV.X264-DIMENSION.ass"
+    """Test ass."""
+    filepath = (r"C:\dl\Dropbox\mat-dir\pyqt\Sandbox\test_files"
+    "\\files_for_testing_load"
+    "\\The.Big.Bang.Theory.S10E15.720p.HDTV.X264-DIMENSION.ass")
     filepath = r"data\The.Big.Bang.Theory.S10E15.720p.HDTV.X264-DIMENSION.ass"  # 
     text = load_file_as_text(filepath)
 
