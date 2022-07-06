@@ -6,7 +6,8 @@ a parallel text editor
 ## Install it
 
 ```shell
-pip install git+https://github.com/ffreemt/ptextpad
+pip install ptextpad --upgrade
+# pip install git+https://github.com/ffreemt/ptextpad
 # poetry add git+https://github.com/ffreemt/ptextpad
 # git clone https://github.com/ffreemt/ptextpad && cd ptextpad
 ```
@@ -15,4 +16,6 @@ pip install git+https://github.com/ffreemt/ptextpad
 ```python
 from ptextpad import ptextpad
 
+# or
+# ptextpad
 ```
