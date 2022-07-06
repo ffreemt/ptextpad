@@ -1,12 +1,11 @@
 """Test load_file_as_text."""
-from loadtext import loadtext
+from ptextpad.loadtext import loadtext
 
 from ptextpad.load_file_as_text import load_file_as_text
 
 
 def test1():
-    r"""
-    Tests default file.
+    r"""Test default file.
 
     defaultdir = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt'
     defaultfile = r'notes pyqt tkinter tktable.txt'

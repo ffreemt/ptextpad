@@ -19,7 +19,7 @@ def detect_file(filepath: Union[str, Path], checklen: Optional[int] = None) -> s
         string of encoding
     """
     if not Path(filepath).is_file():
-        raise Exception(" %s does not exist, retunr None ", filepath)
+        raise Exception(f" {filepath} does not exist, retunr None ")
 
     try:
         # encoding = "{encoding}".format_map(chardet.detect(open(filepath, 'rb').read()[:checklen]))

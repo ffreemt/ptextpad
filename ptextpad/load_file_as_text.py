@@ -6,20 +6,20 @@ Use load_text (*.txt), epub to text (*.epub), docx to text (docx to txt).
 """
 import os
 import sys
-
-from clapse_text import clapse_text
-from docx_to_txt import docx_to_txt
-from epub_to_txt import epub_to_txt
-from html2txt import html2txt
-from load_zipped import load_zipped
 from logzero import logger
-from pdf_to_text_h import pdf_to_text
-from srt_to_txt import srt_to_txt
-from srtass_to_txt import srtass_to_txt
-from xml_to_txt import xml_to_txt
+
+from .docx_to_txt import docx_to_txt
+from .epub_to_txt import epub_to_txt
+from .html2txt import html2txt
+from .load_zipped import load_zipped
+from .pdf_to_text_h import pdf_to_text
+from .srt_to_txt import srt_to_txt
+from .srtass_to_txt import srtass_to_txt
+from .xml_to_txt import xml_to_txt
 
 from .detect_file import detect_file
 from .load_text import load_text
+from .clapse_text import clapse_text
 
 # logger = logging.getLogger(__name__)
 # logger.addHandler(logging.NullHandler())
@@ -80,7 +80,7 @@ def load_file_as_text(filepath):  # noqa: C901
         except Exception as exc:
             logger.error(exc)
             raise
-            
+
         try:
             with open(filepath, encoding=_, errors="ignore") as fha:
                 text = html2txt(fha.read())
