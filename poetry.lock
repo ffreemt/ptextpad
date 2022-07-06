@@ -514,10 +514,6 @@ set-loglevel = ">=0.1.2,<0.2.0"
 tenacity = ">=8.0.1,<9.0.0"
 typer = ">=0.4.1,<0.5.0"
 
-[package.source]
-type = "file"
-url = "../radio-mlbee-client/dist/radio_mlbee_client-0.1.0a0-py3-none-any.whl"
-
 [[package]]
 name = "rfc3986"
 version = "1.5.0"
@@ -623,7 +619,7 @@ test = ["shellingham (>=1.3.0,<2.0.0)", "pytest (>=4.4.0,<5.4.0)", "pytest-cov (
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.3"
-content-hash = "b2cf48c57d8dc39c99431bd75111bfc5ccaa00d9fc7af249b1a4ad76fab8c76b"
+content-hash = "0deab625769cdffe79a8e7974d5ac184835044d5e8d53ac9a84a57a36905a401"
 
 [metadata.files]
 anyio = [
@@ -888,7 +884,8 @@ pytz = [
     {file = "pytz-2022.1.tar.gz", hash = "sha256:1e760e2fe6a8163bc0b3d9a19c4f84342afa0a2affebfaa84b01b978a02ecaa7"},
 ]
 radio-mlbee-client = [
-    {file = "radio_mlbee_client-0.1.0a0-py3-none-any.whl", hash = "sha256:bd06e34ef815e6eb11ee20e882fa9d8ca834fac1e3d468deba81d198317eba6a"},
+    {file = "radio_mlbee_client-0.1.0a0-py3-none-any.whl", hash = "sha256:030305eb5c8298ab4de1709ed65dd8bda9523c2897c13b316e515a0a63c0b189"},
+    {file = "radio_mlbee_client-0.1.0a0.tar.gz", hash = "sha256:962c94318dd261137c857bee0d3b35aa699bffe4deeed15f200be61074df7168"},
 ]
 rfc3986 = [
     {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
