@@ -18,7 +18,7 @@ fastlid = "^0.1.7"
 cchardet = "^2.1.7"
 chardet = "^4.0.0"
 pandas = "^1.4.3"
-radio-mlbee-client = {path = "../radio-mlbee-client/dist/radio_mlbee_client-0.1.0a0-py3-none-any.whl"}
+radio-mlbee-client = "^0.1.0a0"
 
 [tool.poe.executor]
 type = "poetry"

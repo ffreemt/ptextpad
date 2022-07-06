@@ -40,6 +40,7 @@ DONE D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\neualigner003\neualigner.py
 import logging
 import os
 import sys
+from itertools import zip_longest
 from textwrap import dedent
 from copy import deepcopy
 from pathlib import Path
@@ -110,7 +111,7 @@ from .insert_itag import insert_itag
 logzero.loglevel(set_loglevel())
 logger.info("os.environ.get('LOGLEVEL'): %s", os.environ.get('LOGLEVEL'))
 logger.info("debug level: %s", set_loglevel())
-logger.debug("debug level: %s", set_loglevel())
+logger.debug("debug on: %s", set_loglevel())
 
 # __version__ = "0.7.0"  # used in About box
 # __version__ = "0.7.0a0"  # used in About box
@@ -434,7 +435,9 @@ class MyWindow(QMainWindow):
         self.tabWidget.setCurrentIndex(0)
         # init ends
 
-        if set_loglevel() <= 10:  # dev/debug mode
+        if set_loglevel() <= 10:  # dev mode/debug mode
+            logger.debug("debug mode: load two files directly")
+
             # autoload data/en.txt zh.txt
             filec1 = "filec1"
             filec2 = "filec2"
@@ -457,6 +460,21 @@ class MyWindow(QMainWindow):
             self.tableView_1.tablemodel.arraydata = [[filec1, filec2, ""]]
             self.tableView_1.tablemodel.layoutChanged.emit()
             self.tableView_1.resizeRowsToContents()
+
+            # anchor tab (tab2)
+            lines1 = [_.strip() for _ in filec1.splitlines() if _.strip()]
+            lines2 = [_.strip() for _ in filec2.splitlines() if _.strip()]
+            _ = zip_longest_middle(lines1, lines2, fillvalue="")
+
+            # add third col
+            _ = [*zip_longest(*zip(*_), [""], fillvalue="")]
+
+            self.tableView_2.tablemodel.layoutAboutToBeChanged.emit()
+            self.tableView_2.tablemodel.arraydata = _
+            self.tableView_2.tablemodel.layoutChanged.emit()
+            self.tableView_2.resizeRowsToContents()
+
+            self.anchortab_dirty = True
 
         # startup message
         logger.info(
@@ -1415,20 +1433,19 @@ class MyWindow(QMainWindow):
         self.tableView_1.myarray[0][colno], colno = file-1.
 
         Get filename and show only .writer files
-        [snippets-mat\pyqt\editor\Writer-Tutorial]
+        [pyqt\editor\Writer-Tutorial]
         """
         self.no_of_loadfiles += 1
+        logzero.loglevel(set_loglevel())
+        logger.debug(" self.no_of_loadfiles: %s", self.no_of_loadfiles)
 
         if not (file == 1 or file == 2):
             logger.debug(
-                "open() Invalid file= %s supplied (ought to be 1 or 2), exiting...", file
-            )  # noqa
+                "open() Invalid file= %s supplied "
+                "(ought to be 1 or 2), exiting...",
+                file,
+            )
             return None
-
-        self.actionAnchor.setEnabled(True)
-
-        # Get filename and show only .writer files
-        # here
 
         fdl = QFileDialog()
         self.filename, _ = fdl.getOpenFileName(
@@ -1532,7 +1549,19 @@ class MyWindow(QMainWindow):
             self.tableView_1.tablemodel.arraydata = [["", ""]]
             self.tableView_1.tablemodel.layoutChanged.emit()
 
+        self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
         self.tableView_1.tablemodel.arraydata[0][colno] = filecontent
+        self.tableView_1.tablemodel.layoutChanged.emit()
+
+        # enable Tab2 (setAnchor tab)
+        self.actionAnchor.setEnabled(True)
+
+        # load splitlines() to Tab1's left col
+        left = [_ for _ in filecontent.splitlines() if _.strip()]
+        _ = [*zip_longest_middle(left, [""], fillvalue="")]
+        self.tableView_2.tablemodel.layoutAboutToBeChanged.emit()
+        self.tableView_2.tablemodel.arraydata[0] = _
+        self.tableView_2.tablemodel.layoutChanged.emit()
 
         # self.resizeColumnsToContents()
         # self.tableView_1.resizeColumnsToContents()
@@ -1640,7 +1669,7 @@ class MyWindow(QMainWindow):
         try:
             len0 = len(tabdata)
         except Exception as exc:
-            logger.error("Something wrong: %s", exc)
+            logger.error("len(tabdata): %s", exc)
             return None
 
         if len0 <= 0:
@@ -1653,7 +1682,7 @@ class MyWindow(QMainWindow):
         # switch to log tab here
         # logger.debug(" currentIndex %s before", self.tabWidget.currentIndex())  # noqa
 
-        self.tabWidget.setCurrentIndex(3)
+        # self.tabWidget.setCurrentIndex(3)
 
         # logger.debug(" currentIndex %s after", self.tabWidget.currentIndex())
 
@@ -1670,7 +1699,10 @@ class MyWindow(QMainWindow):
                 self.tableView_2.tablemodel.arraydata.pop(0)  # noqa
                 # self.tableView_2.myarray.pop(0)  # noqa
                 # self.tableView_2.tablemodel.removeRow(0)  # noqa FIXME
-            # self.tableView_2.myarray = []  # why doesnt this work?? FIXME
+
+            # why doesnt this work? correct format? [["", "", ""]]
+            # self.tableView_2.myarray = []
+
             self.tableView_2.tablemodel.layoutChanged.emit()
 
         totlines = len(tabdata)
@@ -1840,24 +1872,33 @@ class MyWindow(QMainWindow):
             # msgpopup to ask for non network
             msg = QMessageBox()
             msg.setWindowTitle("Wait...")
+
+            # Question, Information, Warning, Critical
             msg.setIcon(
                 QMessageBox.Question
-            )  # Question, Information, Warning, Critical  # noqa
+            )
             msg.setText("You really want to do autoanchoring?")
 
             msg.setInformativeText(
                 "Autoanchoring uses a net service (quota: 1000 paras per 60 minutes) and is slow (~4 min/1000 paras)."
             )  # noqa
             msg.setDetailedText(
-                "If you click Yes, autoanchoring will start. (It's very important to correct anchors wrongly set by autoanchoring. You may wish to visually examine the anchor tab and reset those anchors.) Or you can click No for manually setting the anchors. There is no need to set too many anchors, one anchor for about every 20-50 paras is enough. Or you can click Cancel to do nothing."
-            )  # noqa
+                "If you click Yes, autoanchoring will start. (It's "
+                "very important to correct anchors wrongly set by "
+                "autoanchoring. You may wish to visually examine the "
+                "anchor tab and reset those anchors.) Or you can "
+                "click No for manually setting the anchors. "
+                "There is no need to set too many anchors, one "
+                "anchor for about every 20-50 paras is enough. "
+                "Or you can click Cancel to do nothing."
+            )
 
             msg.setStandardButtons(
                 QMessageBox.No | QMessageBox.Yes | QMessageBox.Cancel
             )  # noqa
             ret_val = msg.exec_()
 
-            if ret_val == QMessageBox.Cancel:  # Cancel do nothing
+            if ret_val == QMessageBox.Cancel:  # do nothing
                 self.actionAnchor.setEnabled(True)
                 return None
 
@@ -1866,9 +1907,12 @@ class MyWindow(QMainWindow):
             self.srclang = detect_lang(text1[:2000])
             self.tgtlang = detect_lang(text2[:2000])
             logger.debug(
-                "self.srclang: %s, self.tgtlang: %s", self.srclang, self.tgtlang
+                "self.srclang: %s, self.tgtlang: %s",
+                self.srclang,
+                self.tgtlang
             )
 
+            # no auto, simple zip_longest_middle
             if ret_val == QMessageBox.No:
                 # text1 = self.text1[:]
                 # text2 = self.text2[:]
@@ -1878,7 +1922,7 @@ class MyWindow(QMainWindow):
                 tabdata = [[elm[0], elm[1], ""] for elm in tabdata]
                 self.set_anchors(tabdata)
 
-                return None  # here
+                return None
 
             # continue if user selects Yes
             self.tabWidget.setCurrentIndex(3)  # switch to log tab
