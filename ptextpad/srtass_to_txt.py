@@ -13,7 +13,7 @@ from nose.tools import (eq_, with_setup)
 import pysubs2
 
 # from element_to_string import element_to_string
-from detect_file import detect_file
+from .detect_file import detect_file
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -25,8 +25,7 @@ def temp_opener(name, flag, mode=0o777):
 
 
 def srtass_to_txt(filepath, list=False):
-    """
-    Convert srt file or bytes to text str.
+    """Convert srt file or bytes to text str.
 
     use pysrt
     """
@@ -38,7 +37,8 @@ def srtass_to_txt(filepath, list=False):
 
         try:
             # subs = pysrt.open(filepath, detect_file(filepath))
-            encoding = detect_file(filepath).get("encoding")
+            # encoding = detect_file(filepath).get("encoding")
+            encoding = detect_file(filepath)
             if not encoding:
                 raise Exception("Cant detect file type, binary file?")
 
@@ -99,16 +99,6 @@ def srtass_to_txt(filepath, list=False):
     return text
 
 
-def my_setup():
-    """Setup."""
-    fmt = '%(name)s-%(filename)s[ln:%(lineno)d]:'
-    fmt += '%(levelname)s: %(message)s'
-    logging.basicConfig(format=fmt, level=logging.DEBUG)
-
-
-# pep8/flake8/pyling filename
-# nosetests -v --nologcapture
-@with_setup(my_setup)
 def test_():
     """special cases"""
     filepath = r'D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en1.epub'
@@ -122,7 +112,7 @@ def test_():
     eq_(None, srt_to_txt(filepath))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_srt():
     """Test srt>>> """
     filepath = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\test_files\ImKeller.chs.srt'
@@ -132,7 +122,7 @@ def test_srt():
     eq_(6683, len(srt_to_txt(filepath)))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_srtLuis():
     """Test Luis Trenker>>> """
     filepath = r'F:\baiduyundownload\2015-11-18_ard_FilmMittwoch im Ersten - Luis Trenker - Der schmale Grat der Wahrheit@HD-default.srt'
@@ -141,7 +131,7 @@ def test_srtLuis():
     eq_(49684, len(srt_to_txt(filepath)))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_srtLuis_bytes():
     """Test Luis Trenker>>> """
     filepath = r'F:\baiduyundownload\2015-11-18_ard_FilmMittwoch im Ersten - Luis Trenker - Der schmale Grat der Wahrheit@HD-default.srt'
@@ -151,7 +141,7 @@ def test_srtLuis_bytes():
     eq_(49684, len(srt_to_txt(tmp)))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_ass():
     """Test ass>>> """
     filepath = r'F:\baiduyundownload\2015-11-18_ard_FilmMittwoch im Ersten - Luis Trenker - Der schmale Grat der Wahrheit@HD-default.srt'
@@ -162,7 +152,7 @@ def test_ass():
     eq_(19148, len(srtass_to_txt(filepath)))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_srtass():
     """Test srtass srt>>> """
     filepath = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\test_files\ImKeller.chs.srt'
@@ -175,7 +165,7 @@ def test_srtass():
     eq_(6817, len(tmp))
 
 
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_srtasszip():
     """Test srtass srt zipped>>> """
     import zipfile

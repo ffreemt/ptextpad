@@ -5,9 +5,13 @@ Clapse text from pdftotext.
 import logging
 import re
 
+from fastlid import fastlid
+
 # from detect_lang import detect_lang
-import langid
-from nose.tools import (eq_, with_setup)
+# import langid
+# from nose.tools import (eq_, with_setup)
+
+from .pdf_to_text import pdf_to_text
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -23,10 +27,13 @@ def clapse_text(text, preamble=' '):
     different languages: new para
     """
 
-    langid.set_languages(['en', 'zh'])
+    # langid.set_languages(['en', 'zh'])
+    fastlid.set_languages = ['en', 'zh']
 
     textvec = text.splitlines()
-    textid = [langid.classify(elm)[0] if elm.strip() else '' for elm in textvec]
+
+    # textid = [langid.classify(elm)[0] if elm.strip() else '' for elm in textvec]
+    textid = [fastlid(elm)[0] if elm.strip() else '' for elm in textvec]
 
     texttemp = textvec[0]
     for idx, elm in enumerate(textvec[1:]):
@@ -44,23 +51,12 @@ def clapse_text(text, preamble=' '):
     return texttemp
 
 
-def my_setup():
-    """my_setup."""
-    global out
-    out = 1
-    # LOGGER.debug(" global out = 1")
-    # print("print global out = 1")
-    fmt = '%(name)s-%(filename)s[ln:%(lineno)d]:'
-    fmt += '%(levelname)s: %(message)s'
-    logging.basicConfig(format=fmt, level=logging.DEBUG)
-
-
-@with_setup(my_setup)
 def test_filepath1():
     """test_TE8-13期封面故事中英双语对照.pdf+++."""
-    from pdf_to_text import pdf_to_text
-    filepath1 = \
-        'D:\\dl\\Dropbox\\mat-dir\\snippets-mat\\pyqt\\Sandbox\\text_mat\\TE8-13期封面故事中英双语对照.pdf'
+    filepath1 ='D:\\dl\\Dropbox\\mat-dir\\snippets-mat\\pyqt'
+    '\\Sandbox\\text_mat\\TE8-13期封面故事中英双语对照.pdf'
+    filepath1 ='D:\\data\\TE8-13期封面故事中英双语对照.pdf'
+
     text1 = pdf_to_text(filepath1)
 
     text1a = clapse_text(text1)
@@ -68,4 +64,5 @@ def test_filepath1():
     # Out[556]: 94
     exp = 94
     # LOGGER.debug("test out: %s", out)
-    eq_(exp, len(text1a.splitlines()))
+
+    assert exp == len(text1a.splitlines())

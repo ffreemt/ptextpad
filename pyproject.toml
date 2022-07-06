@@ -19,6 +19,10 @@ cchardet = "^2.1.7"
 chardet = "^4.0.0"
 pandas = "^1.4.3"
 radio-mlbee-client = "^0.1.0a0"
+python-docx = "^0.8.11"
+html2text = "^2020.1.16"
+pysrt = "^1.1.2"
+pysubs2 = "^1.4.2"
 
 [tool.poe.executor]
 type = "poetry"

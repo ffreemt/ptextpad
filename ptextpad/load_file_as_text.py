@@ -1,6 +1,4 @@
-# coding: utf8
-"""
-Load text/epub/docx/html/htm/xhtml/xml/tmx/zip file as text.
+"""Load text/epub/docx/html/htm/xhtml/xml/tmx/zip file as text.
 
 Use load_text (*.txt), epub to text (*.epub), docx to text (docx to txt).
 """
@@ -74,7 +72,7 @@ def load_file_as_text(filepath):  # noqa: C901
             return ""
 
     # filepath.endswith(".htm") or filepath.endswith(".html") or filepath.endswith(".xhtml")
-    elif filepath.endswith(".htm"):
+    elif filepath.endswith(".htm") or filepath.endswith(".html"):
         try:
             _ = detect_file(filepath)
         except Exception as exc:
