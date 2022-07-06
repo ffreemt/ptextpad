@@ -13,9 +13,8 @@ pip install ptextpad --upgrade
 ```
 
 ## Use it
-```python
-from ptextpad import ptextpad
-
+```shell
+python -m ptextpad
 # or
 # ptextpad
 ```
