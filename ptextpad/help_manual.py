@@ -3,8 +3,8 @@
 
 import logging
 import os
-
 from pathlib import Path
+
 from PyQt5.QtGui import QIcon
 
 # from PyQt5 import QtWidgets
@@ -69,16 +69,16 @@ def help_manual():
         LOGGER.debug("curr dir, par dir: %s, %s", currdir, paredir)
 
         # filepath = os.path.join(paredir, readmefile)  # noqa
-        
+
         # filepath = os.path.join(currdir, readmefile)  # noqa
         # filepath = os.path.abspath(filepath)
         # LOGGER.debug(" readme.html: %s", filepath)
-        
+
         readmefile = "index.html"
         pp_dir = Path(__file__).parent.parent
-        filepath = Path(pp_dir, "docs/_build/singlehtml/index.html")
-        
-        
+        pp_dir = Path(__file__).parent
+        filepath = Path(pp_dir, "singlehtml/index.html")
+
         try:
             os.startfile(filepath)  # noqa
         except Exception as exc:

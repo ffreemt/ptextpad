@@ -40,21 +40,12 @@ DONE D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\neualigner003\neualigner.py
 import logging
 import os
 import sys
-from itertools import zip_longest
-from textwrap import dedent
 from copy import deepcopy
+from itertools import zip_longest
 from pathlib import Path
+from textwrap import dedent
 
 import logzero
-
-# langid.set_languages(), langid.set_languages([self.srclang, self.tgtlang])  # noqa
-# from detect_lang import detect_lang, langid
-
-
-from gen_aligned_sentlist import gen_aligned_sentlist
-from list_to_csv import list_to_csv
-from lists_to_tmx4n import lists_to_tmx
-from logging_progress import logging_progress
 from logzero import logger
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import QElapsedTimer, QObject, Qt, QThread, pyqtSignal, pyqtSlot
@@ -68,16 +59,9 @@ from PyQt5.QtWidgets import (  # noqa
     QProgressDialog,
     QSplashScreen,
 )
-from realign_selected_rows import realign_selected_rows
-from sep_chinese import sep_chinese
 from set_loglevel import set_loglevel
+from radio_mlbee_client import radio_mlbee_client
 
-# from texts_to_anchored_paras import texts_to_anchored_paras
-from text_to_paras import text_to_paras
-from twofiles_trunk import twofiles_trunk
-from zip_longest_middle import zip_longest_middle
-
-# from ptextpad.send_to_table import send_to_table
 
 from ptextpad import __version__
 from ptextpad.fetch_url import FetchURL
@@ -85,14 +69,31 @@ from ptextpad.help_manual import help_manual
 from ptextpad.load_text import load_text
 from ptextpad.msg_popup import msg_popup
 from ptextpad.popup_anchortab_dirty import popup_anchortab_dirty
-
 from ptextpad.qthread_func_with_progressbar import QThreadFuncWithQProgressBar  # noqa
+
+from .detect_lang import detect_lang
+from .gen_aligned_sentlist import gen_aligned_sentlist
+from .insert_itag import insert_itag
+from .list_to_csv import list_to_csv
+from .lists_to_tmx4n import lists_to_tmx
 
 # from load_text import load_text
 from .load_file_as_text import load_file_as_text
+from .logging_progress import logging_progress
+from .realign_selected_rows import realign_selected_rows
 from .remove_selected_rows import remove_selected_rows
-from .detect_lang import detect_lang
-from .insert_itag import insert_itag
+from .sep_chinese import sep_chinese
+
+# from texts_to_anchored_paras import texts_to_anchored_paras
+from .text_to_paras import text_to_paras
+from .twofiles_trunk import twofiles_trunk
+from .zip_longest_middle import zip_longest_middle
+
+# from .send_to_table import Worker
+from . import send_to_table
+
+from .data_for_updating import data_for_mergeup
+
 
 # from ptextpad.ui.neualigner_ui import Ui_MainWindow
 
@@ -108,10 +109,14 @@ from .insert_itag import insert_itag
 # logger = logging.getLogger(__name__)
 # logger.addHandler(logging.NullHandler())
 
+# set env var autoload to turn on
+autoload = os.environ.get("AUTOLOAD")
+
 logzero.loglevel(set_loglevel())
-logger.info("os.environ.get('LOGLEVEL'): %s", os.environ.get('LOGLEVEL'))
+logger.info("os.environ.get('LOGLEVEL'): %s", os.environ.get("LOGLEVEL"))
 logger.info("debug level: %s", set_loglevel())
 logger.debug("debug on: %s", set_loglevel())
+logger.debug("autoload: %s", autoload)
 
 # __version__ = "0.7.0"  # used in About box
 # __version__ = "0.7.0a0"  # used in About box
@@ -156,16 +161,17 @@ class Worker(QObject):  # [for files_to_anchortab]
     def get_tabdata(self):  # slot for thread (QThread)
         """Monitor."""
         # from .texts_to_anchored_paras import texts_to_anchored_paras
-        from radio_mlbee_client import radio_mlbee_client
 
-        logger.debug(
-            "*****radio_mlbee_client/texts_to_anchored_paras starts****"
-        )
+        logger.debug("*****radio_mlbee_client/texts_to_anchored_paras starts****")
 
         # tabdata = texts_to_anchored_paras(self.text1, self.text2, self.tgtlang)
 
         # tabdata = texts_to_anchored_paras(self.text1, self.text2)
-        tabdata = radio_mlbee_client(self.text1, self.text2)
+        try:
+            tabdata = radio_mlbee_client(self.text1, self.text2)
+        except Exception as exc:
+            logger.error(exc)
+            tabdata
 
         # selftabdataloaded = True
         # time.sleep(1)  # can this prevent crash?
@@ -215,6 +221,7 @@ class MyWindow(QMainWindow):
 # class MyWindow(QMainWindow, Ui_MainWindow):
 class MyWindow(QMainWindow):
     """Define mainwin."""
+
     srclang = ""
     tgtlang = ""
 
@@ -395,7 +402,7 @@ class MyWindow(QMainWindow):
         self.actionMerit_0_or_1.triggered.connect(self.flipmerit)
 
         # ########## here TODO ##########
-        # set row numbers actionSet_Row_Numbers, bound to shortcut Space  # noqa
+        # set row numbers actionSet_Row_Numbers, bound to shortcut Space
         self.actionSet_Row_Numbers.triggered.connect(self.set_row_numbers)
 
         # manually set anchor bound to shortcut Return
@@ -435,7 +442,7 @@ class MyWindow(QMainWindow):
         self.tabWidget.setCurrentIndex(0)
         # init ends
 
-        if set_loglevel() <= 10:  # dev mode/debug mode
+        if set_loglevel() <= 10 and autoload:  # dev mode/debug mode
             logger.debug("debug mode: load two files directly")
 
             # autoload data/en.txt zh.txt
@@ -444,17 +451,11 @@ class MyWindow(QMainWindow):
             try:
                 filec1 = load_text("data/en.txt")
             except Exception as exc:
-                logger.error(
-                    "load_text(\"data/en.txt\") error: %s",
-                    exc
-                )
+                logger.error('load_text("data/en.txt") error: %s', exc)
             try:
                 filec2 = load_text("data/zh.txt")
             except Exception as exc:
-                logger.error(
-                    "load_text(\"data/zh.txt\") error: %s",
-                    exc
-                )
+                logger.error('load_text("data/zh.txt") error: %s', exc)
 
             self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
             self.tableView_1.tablemodel.arraydata = [[filec1, filec2, ""]]
@@ -475,6 +476,12 @@ class MyWindow(QMainWindow):
             self.tableView_2.resizeRowsToContents()
 
             self.anchortab_dirty = True
+
+        self.init_dir = "."
+        if Path("data").is_dir():
+            self.init_dir = "data"
+        elif Path("../data").is_dir():
+            self.init_dir = "data"
 
         # startup message
         logger.info(
@@ -887,10 +894,7 @@ class MyWindow(QMainWindow):
                 # item = mytable.tablemodel.data(index1, Qt.DisplayRole)
                 item = mytable.tablemodel.data(index1[-1], Qt.DisplayRole)
             except Exception as exc:
-                logger.error(
-                    "Unable to get item: *%s*, setting to ''",
-                    exc
-                )
+                logger.error("Unable to get item: *%s*, setting to ''", exc)
                 item = ""
 
             try:
@@ -905,10 +909,7 @@ class MyWindow(QMainWindow):
             else:
                 # mytable.tablemodel.layoutAboutToBeChanged.emit()
                 _ = insert_itag(item, cursorpos)
-                logger.debug(
-                    "_: %s, item: %s, cursorpos: %s",
-                    _, item, cursorpos
-                )
+                logger.debug("_: %s, item: %s, cursorpos: %s", _, item, cursorpos)
                 try:
                     # index1.model().setData(index1, _)
                     mytable.tablemodel.setData(index1[-1], _)
@@ -1238,18 +1239,14 @@ class MyWindow(QMainWindow):
             update_table(self.tableView_3)
 
     def mergeup(self):
-        """
-        Merge the selected cell up for the active tab.
+        """Merge the selected cell up for the active tab.
 
         refer to mergedown()
 
         index1 = self.tableView_1.selectedIndexes()
         if index1:
             index1[-1].column()
-
         """
-        from data_for_updating import data_for_mergeup
-
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
             index1 = mytable.selectedIndexes()
@@ -1441,8 +1438,7 @@ class MyWindow(QMainWindow):
 
         if not (file == 1 or file == 2):
             logger.debug(
-                "open() Invalid file= %s supplied "
-                "(ought to be 1 or 2), exiting...",
+                "open() Invalid file= %s supplied " "(ought to be 1 or 2), exiting...",
                 file,
             )
             return None
@@ -1451,9 +1447,9 @@ class MyWindow(QMainWindow):
         self.filename, _ = fdl.getOpenFileName(
             self,
             "Open File",
-            ".",
+            self.init_dir,
             "(*.txt *.docx *.epub *.zip *.srt *.htm *.html *.pdf)",
-        )  # noqa
+        )
 
         logger.debug("getOpenFileName: %s, %s", self.filename, _)
 
@@ -1469,9 +1465,12 @@ class MyWindow(QMainWindow):
         else:
             self.file2 = self.filename
 
+        logger.debug(" self.tabWidget.setCurrentIndex(0) ")
         self.tabWidget.setCurrentIndex(0)
 
         filecontent = load_file_as_text(self.filename)
+
+        logger.debug("filecontent[:50]: %s", filecontent[:50])
 
         if filecontent is None:
             logger.error(
@@ -1489,6 +1488,8 @@ class MyWindow(QMainWindow):
         if totlines < fill_to_max:
             filecontent += "\r\n" * (fill_to_max - totlines)
 
+        logger.debug("totlines: %s", totlines)
+
         # self.tableView_1.myarray[0][0] = filecontent
 
         # langid.set_languages()
@@ -1497,6 +1498,10 @@ class MyWindow(QMainWindow):
             self.no_of_loadfiles = 1
         else:
             self.tgtlang = detect_lang(filecontent)
+
+        # detect_lang used fastlid, old version of fastlid turns debug off
+
+        logzero.loglevel(set_loglevel())
 
         if self.srclang == "" or self.srclang is None:
             logger.warning(" Cant detect srclang, setting to english...")
@@ -1535,6 +1540,7 @@ class MyWindow(QMainWindow):
                 self.no_of_loadfiles += 1
             # """
             # modi 2017 02 09
+
         self.no_of_loadfiles += 1
 
         # colno = (file - 1) % 2
@@ -1542,27 +1548,20 @@ class MyWindow(QMainWindow):
 
         # self.tableView_1.myarray[0][colno] = filecontent
         if (
-            len(self.tableView_1.tablemodel.arraydata) == 0
-        ):  # possible deleted to empty  # noqa
-            # if self.tableView_1.tablemodel.arraydata:  # possible deleted to empty  # noqa
+            # len(self.tableView_1.tablemodel.arraydata) == 0
+            not self.tableView_1.tablemodel.arraydata
+        ):  # possible deleted to empty []
             self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
-            self.tableView_1.tablemodel.arraydata = [["", ""]]
+            self.tableView_1.tablemodel.arraydata = [["", "", ""]]
             self.tableView_1.tablemodel.layoutChanged.emit()
 
-        self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
+        logger.debug("colno: %s", colno)
+
+        # self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
+        # self.tableView_1.tablemodel.layoutChanged.emit()
+
+        logger.debug("Update tab0 col: %s", colno)
         self.tableView_1.tablemodel.arraydata[0][colno] = filecontent
-        self.tableView_1.tablemodel.layoutChanged.emit()
-
-        # enable Tab2 (setAnchor tab)
-        self.actionAnchor.setEnabled(True)
-
-        # load splitlines() to Tab1's left col
-        left = [_ for _ in filecontent.splitlines() if _.strip()]
-        _ = [*zip_longest_middle(left, [""], fillvalue="")]
-        self.tableView_2.tablemodel.layoutAboutToBeChanged.emit()
-        self.tableView_2.tablemodel.arraydata[0] = _
-        self.tableView_2.tablemodel.layoutChanged.emit()
-
         # self.resizeColumnsToContents()
         # self.tableView_1.resizeColumnsToContents()
         # self.tableView_1.resizeRowsToContents()
@@ -1570,25 +1569,45 @@ class MyWindow(QMainWindow):
         # qDebug(" %s: %s" % (self.filename, self.tableView_1.myarray))
         # qDebug(" %s: %s" % (self.filename, self.tableView_1.myarray[0][0][:400]))  # noqa
 
-        # update with signal for index: 0, 0
-        # index00 = self.tableView_1.tablemodel.createIndex(0, 0)
-
+        # update with signal for index: 0, colno
         index00 = self.tableView_1.tablemodel.createIndex(0, colno)
         self.tableView_1.tablemodel.dataChanged.emit(index00, index00)
-
         self.tableView_1.resizeRowsToContents()
+
+        logger.debug(" done updating tab1 cell (0, %s) ", colno)
+
+        # enable Tab2 (setAnchor tab)
+        logger.debug("set self.actionAnchor.setEnabled(True)")
+        self.actionAnchor.setEnabled(True)
+
+        # --------
+        _ = """  # does not quite work
+        logger.debug(" tableView_1 cell (0, %s) updated", colno)
+
+        # load splitlines() to Tab1's left col
+        logger.debug(" load splitlines() to Tab1's left col. ")
+        left = [_ for _ in filecontent.splitlines() if _.strip()]
+        _ = [*zip_longest_middle(left, [""], fillvalue="")]
+        self.tableView_2.tablemodel.layoutAboutToBeChanged.emit()
+        self.tableView_2.tablemodel.arraydata[0] = _
+        self.tableView_2.tablemodel.layoutChanged.emit()
+
+        logger.debug(" tab 1 updated")
+        # ---- """
 
         taildots = ""
         # if len(self.tableView_1.myarray[0][colno]) > 200:
         if len(self.tableView_1.tablemodel.arraydata[0][colno]) > 200:
             taildots = "......"
 
-        # logger.debug(" %s: %s", self.filename, self.tableView_1.myarray[0][colno][:200].strip() + taildots)  # noqa
+        logger.debug(" >>> self.tableView_1.myarray: %s", self.tableView_1.myarray)
         logger.debug(
-            " %s: self.tableView_1.tablemodel.arraydata[0][colno][:200].strip() + taildots++%s++",
+            " %s: self.tableView_1.tablemodel.arraydata[0][colno][:200].strip() + taildots++  s ++",
             self.filename,
-            self.tableView_1.tablemodel.arraydata[0][colno][:200].strip() + taildots,
+            # self.tableView_1.tablemodel.arraydata[0][colno][:200].strip() + taildots,
         )  # noqa
+
+        logger.debug(" Done self.open ")
 
     # to anchortab
     def import_to_anchortab(self):
@@ -1601,9 +1620,9 @@ class MyWindow(QMainWindow):
 
         """
         # import pandas as pd
-        from csv_to_list import csv_to_list
-        from excel_to_list import excel_to_list
-        from tmx_to_list import tmx_to_list
+        from .csv_to_list import csv_to_list
+        from .excel_to_list import excel_to_list
+        from .tmx_to_list import tmx_to_list
 
         if self.anchortab_dirty:
             # ret_val = self.popup_anchortab_dirty()
@@ -1618,9 +1637,9 @@ class MyWindow(QMainWindow):
         self.import_paras_filename = QFileDialog.getOpenFileName(
             self,
             "Open File",
-            ".",
+            self.init_dir,
             "Csv Txt(Tab) Excel Tmx files (*.txt *.csv *.xls *.xlsx *.tmx)",
-        )  # noqa
+        )
 
         logger.debug("This may take a while (up to a few minutes)")
         logger.debug("The bigger the file, the longer it takes, hold on...")
@@ -1730,7 +1749,10 @@ class MyWindow(QMainWindow):
             try:
                 self.tableView_2.tablemodel.arraydata.remove(["", "", ""])
             except Exception as exc:
-                logger.error("""self.tableView_2.tablemodel.arraydata.remove(["", "", ""] error: %s""", exc)
+                logger.error(
+                    """self.tableView_2.tablemodel.arraydata.remove(["", "", ""] error: %s""",
+                    exc,
+                )
             self.tableView_2.tablemodel.layoutChanged.emit()
 
         # self.tableView_2.tablemodel.layoutChanged.emit()
@@ -1874,9 +1896,7 @@ class MyWindow(QMainWindow):
             msg.setWindowTitle("Wait...")
 
             # Question, Information, Warning, Critical
-            msg.setIcon(
-                QMessageBox.Question
-            )
+            msg.setIcon(QMessageBox.Question)
             msg.setText("You really want to do autoanchoring?")
 
             msg.setInformativeText(
@@ -1907,9 +1927,7 @@ class MyWindow(QMainWindow):
             self.srclang = detect_lang(text1[:2000])
             self.tgtlang = detect_lang(text2[:2000])
             logger.debug(
-                "self.srclang: %s, self.tgtlang: %s",
-                self.srclang,
-                self.tgtlang
+                "self.srclang: %s, self.tgtlang: %s", self.srclang, self.tgtlang
             )
 
             # no auto, simple zip_longest_middle
@@ -2065,7 +2083,7 @@ class MyWindow(QMainWindow):
         files_to_anchortab  # self.tabWidget.currentIndex() == 0
 
         """
-        from reanchor_selected_rows import (
+        from .reanchor_selected_rows import (
             reanchor_selected_rows,  # will load sseg, takes about 60 sec
         )
 
@@ -2355,7 +2373,7 @@ class MyWindow(QMainWindow):
 
 def main():
     """main."""
-    from stream_to_logger import StreamToLogger
+    # from stream_to_logger import StreamToLogger
 
     # send stderr to log tab
     stderr_logger = logging.getLogger("STDERR")
@@ -2384,14 +2402,12 @@ def main():
 
     splash.show()
 
-    splash.showMessage(
-        rf"\n\Ptextpad {__version__} loading, it may take a while..."
-    )
+    splash.showMessage(rf"\n\Ptextpad {__version__} loading, it may take a while...")
     # SPLASH.showMessage("Loaded, coming up...")
     # from detect_lang import detect_lang
 
-    detect_lang("this is english")
-    from reanchor_selected_rows import reanchor_selected_rows
+    # detect_lang("this is english")
+    # from reanchor_selected_rows import reanchor_selected_rows
 
     t = QElapsedTimer()
     t.start()

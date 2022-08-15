@@ -1,17 +1,18 @@
+"""Furnish a progressbar QThreadFuncWithQProgressBar."""
 import logging
 import sys
 
-from csv_to_list import csv_to_list
-from nose.tools import eq_, with_setup
+# from nose.tools import eq_, with_setup
 
-# ~ from PyQt4 import QtCore, QtGui
-from PyQt5 import QtCore, QtGui
+# from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtWidgets
 
 # ~ import mypyqt.minifuncwrapper as mini
 import ptextpad.minifuncwrapper as mini
 
 # import mypyqt.myqprogressbar
 from ptextpad.myqprogressbar import MyQProgressBar
+from .csv_to_list import csv_to_list
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -51,9 +52,7 @@ class QThreadFuncWithQProgressBar(QtCore.QObject):
 
         # progressWidget = MyQProgressBar(None, myclass)
         # self.progressWidget = mypyqt.myqprogressbar.MyQProgressBar(
-        self.progressWidget = MyQProgressBar(
-            self.parent, self.myobj
-        )  # noqa
+        self.progressWidget = MyQProgressBar(self.parent, self.myobj)  # noqa
 
         self.qth.start()
         # LOGGER.debug(" QThreadFuncWithQProgressBar self.qth.start() ")
@@ -71,7 +70,10 @@ class QThreadFuncWithQProgressBar(QtCore.QObject):
         """
         self.out = self.myobj.out
         self.qth.quit()
-        self.outdata_ready.emit(self.myobj.out)
+
+        if self.myobj.out is not None:
+            self.outdata_ready.emit(self.myobj.out)
+
         # transfer data to outside, tap data (self.myobj.out) to func for further processing: qthobj.outdata_ready.connect(func)  # noqa
 
         LOGGER.debug(" on_func_finished/outdata_ready.emit ")
@@ -107,17 +109,20 @@ def my_teardown():
     """Teardown"""
 
 
-@with_setup(my_setup, my_teardown)
+# @with_setup(my_setup, my_teardown)
 def test_():
-    """test_+++."""
+    """Test _+++."""
 
     # from mypyqt.qthread_func_with_progressbar import QThreadFuncWithQProgressBar  # noqa
     # exec(myreload("mypyqt.qthread_func_with_progressbar", "QThreadFuncWithQProgressBar"))  # noqa
 
-    app = QtGui.QApplication([])
+    # app = QtGui.QApplication([])  # pyqt4
+    app = QtWidgets.QApplication([])  # pyqt5
 
     filepath = r"D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\test_files\files_for_testing_load\aligned\rousseau-the-social-contract00.txt"  # noqa
     # filepath = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\test_files\files_for_testing_load\aligned\rousseau-the-social-contract.txt'  # noqa
+
+    filepath = "data/Folding_Beijing_12.txt"
 
     func = csv_to_list
     args = (filepath,)
@@ -129,10 +134,13 @@ def test_():
     )  # noqa
 
     def receive_out(out):
-        """Use signal to activate"""
+        """Use signal to activate."""
         data = out[:]
         LOGGER.debug("further process out...")
-        eq_(1501, len(data))
+
+        # eq_(1501, len(data))
+        # assert len(data) >= 1501
+        assert len(data) >= 1112
 
     qthread_func_w_progressbar.outdata_ready.connect(receive_out)
 

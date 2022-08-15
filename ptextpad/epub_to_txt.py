@@ -1,19 +1,19 @@
-"""
-Convert epub to text
-"""
-import os
+"""Convert epub to text."""
 import logging
-# import re
-
+import os
 import zipfile
-# from lxml import etree
-# import zipfile
-from nose.tools import (eq_, with_setup)
 
 # from element_to_string import element_to_string
 from html2text import html2text
 
+# from lxml import etree
+# import zipfile
+# from nose.tools import eq_, with_setup
+
 from .post_process import post_process
+
+# import re
+
 
 # from bs4 import BeautifulSoup
 # from htmlToText import htmlToText
@@ -40,7 +40,7 @@ def epub_to_txt(fileepub):
         return None
 
     try:
-        zfile = zipfile.ZipFile(fileepub, 'r')
+        zfile = zipfile.ZipFile(fileepub, "r")
     except Exception as exc:
         LOGGER.error(" Error: %s", exc)
         return None
@@ -50,9 +50,9 @@ def epub_to_txt(fileepub):
         LOGGER.warning(" zipfile.ZipFile(file).namelist() is empty, returning None.")
         return None
 
-    text = ''
+    text = ""
     for elm in zfile.namelist():
-        if elm[-6:] == '.xhtml' or elm[-5:] == '.html':
+        if elm[-6:] == ".xhtml" or elm[-5:] == ".html":
             data = zfile.read(elm)
             # tree = etree.fromstring(data)
             # text += element_to_string(tree)
@@ -69,21 +69,25 @@ def epub_to_txt(fileepub):
 
 
 def my_setup():
-    fmt = '%(name)s-%(filename)s[ln:%(lineno)d]:'
-    fmt += '%(levelname)s: %(message)s'
+    fmt = "%(name)s-%(filename)s[ln:%(lineno)d]:"
+    fmt += "%(levelname)s: %(message)s"
     logging.basicConfig(format=fmt, level=logging.DEBUG)
 
 
 # pep8/flake8/pyling filename
 # nosetests -v --nologcapture
-@with_setup(my_setup)
+# @with_setup(my_setup)
 def test_():
-    fileepub = r'D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en1.epub'
+    fileepub = r"txt-books\Folding_Beijing-en1.epub"
+    fileepub = "data/Folding_Beijing-en1.epub"
 
-    eq_(None, epub_to_txt(fileepub))
+    assert epub_to_txt(fileepub) is None
 
-    fileepub = r'D:\dl\Dropbox\shuangyu_ku\txt-books\To Kill a Mockingbird\To Kill a Mockingbird.mobi'
-    eq_(None, epub_to_txt(fileepub))
+    fileepub = r"txt-books\To Kill a Mockingbird\To Kill a Mockingbird.mobi"
+    fileepub = "data/To Kill a Mockingbird\To Kill a Mockingbird.mobi"
+    assert epub_to_txt(fileepub) is None
 
-    fileepub = r'D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en.epub'
-    eq_(86745, len(epub_to_txt(fileepub)))
+    fileepub = r"txt-books\Folding_Beijing-en.epub"
+    fileepub = "data/Folding_Beijing-en.epub"
+    _ = epub_to_txt(fileepub)
+    assert len(_) >= 86400

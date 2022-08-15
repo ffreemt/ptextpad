@@ -1,10 +1,9 @@
 """Detect file's encoding."""
+import os
+from pathlib import Path
 from typing import Optional, Union
 
-import os
-
 import cchardet
-from pathlib import Path
 from logzero import logger
 
 

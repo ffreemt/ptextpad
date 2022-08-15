@@ -10,7 +10,6 @@ import logzero
 
 # from update_list import update_mytable
 # from update_list import update_list
-from data_for_updating import data_for_split0
 from logzero import logger
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QAbstractTableModel, Qt, qDebug  # NOQA
@@ -26,6 +25,7 @@ from PyQt5.QtWidgets import (
     QTableView,
     QTextEdit,
 )
+from .data_for_updating import data_for_split0
 
 # logzero.loglevel(10)
 
@@ -193,8 +193,8 @@ class MyTableModel(QAbstractTableModel):
 
     def data(self, index, role):
         """Data."""
-        # LOGGER.debug(" self.arraydata: %s", self.arraydata)
-        # carefull with LOGGER in this method, lots of traffic
+        # logger.debug(" self.arraydata: %s", self.arraydata)
+        # carefull with logger in this method, lots of traffic
         if not index.isValid():
             return None
 
@@ -232,9 +232,9 @@ class MyTableModel(QAbstractTableModel):
                     # http://cloford.com/resources/colours/500col.htm
                 if datafloat > 0.33 and datafloat < 0.5:
                     return QColor(155, 100, 255)  # orchid 218, 112, 214
-                if datafloat >= 0.5 and datafloat < .70:
+                if datafloat >= 0.5 and datafloat < 0.70:
                     return QColor(125, 175, 255)
-                if datafloat >= .70:  # 1.
+                if datafloat >= 0.70:  # 1.
                     return QColor(75, 251, 152)  # palegreen 152, 251, 152
 
             # if index.column() == 2:  # 3rd column merit
@@ -350,7 +350,8 @@ class MyDelegate(QStyledItemDelegate):
         self.index = index
         self.model = index.model()  # MyTableModel
 
-        qDebug(" run createEditor ")
+        # qDebug(" run createEditor ")
+        logger.debug(" run createEditor ")
         return self.editor
 
     def commitAndCloseEditor(self):  # noqa
@@ -362,7 +363,7 @@ class MyDelegate(QStyledItemDelegate):
         # self.textcursor = editor
         # self.cursormy = QCursor.pos()
 
-        qDebug(" run commitAndCloseEditor ")
+        # qDebug(" run commitAndCloseEditor ")
         logger.debug(" run commitAndCloseEditor ")
 
         if isinstance(self.editor, (QTextEdit, QLineEdit, QPlainTextEdit)):
@@ -377,12 +378,12 @@ class MyDelegate(QStyledItemDelegate):
         idxj = self.index.column()
         # xxx # tmpdata = data_for_split0(list0, idxi, idxj)
 
-        LOGGER.debug(" == idxi idxj ==  %s, %s", idxi, idxj)
-        LOGGER.debug(" ** model.arraydata ** %s ", self.model.arraydata)
+        logger.debug(" == idxi idxj ==  %s, %s", idxi, idxj)
+        logger.debug(" ** model.arraydata ** %s ", self.model.arraydata)
 
         tmpdata = data_for_split0(self.model.arraydata, idxi, idxj)
 
-        LOGGER.debug(" tmpdata [irow, row_numbers, rows to add] %s ", tmpdata)
+        logger.debug(" tmpdata [irow, row_numbers, rows to add] %s ", tmpdata)
 
         # updating
         self.model.layoutAboutToBeChanged.emit()
@@ -390,7 +391,7 @@ class MyDelegate(QStyledItemDelegate):
 
         # update_list(self.model.arraydata, tmpdata[0], tmpdata[1], tmpdata[2])  # idxi, row_numbers, rows_to_add
 
-        # LOGGER.debug("\n!!!before pop!!! %s\n", self.model.arraydata)
+        # logger.debug("\n!!!before pop!!! %s\n", self.model.arraydata)
 
         self.model.arraydata[tmpdata[0]] = tmpdata[2][0][
             :
@@ -398,13 +399,13 @@ class MyDelegate(QStyledItemDelegate):
         self.model.dataChanged.emit(self.index, self.index)
 
         # self.model.arraydata.pop(tmpdata[0])  # idxi row
-        # LOGGER.debug("\n!!!after pop!!! %s\n", self.model.arraydata)
+        # logger.debug("\n!!!after pop!!! %s\n", self.model.arraydata)
 
         # self.model.layoutChanged.emit()
         # self.model.layoutAboutToBeChanged.emit()
 
         # self.model.arraydata.insert(tmpdata[0], tmpdata[2][0])
-        # LOGGER.debug("\n!!!after 1st insert!!! %s\n", self.model.arraydata)
+        # logger.debug("\n!!!after 1st insert!!! %s\n", self.model.arraydata)
 
         # self.model.dataChanged.emit(self.index, self.index)  # somehow this is needed for pop and insert at the same row, 1pop+1insert equiv to data change? use update the row instead  # noqa
 
@@ -412,18 +413,19 @@ class MyDelegate(QStyledItemDelegate):
         self.model.arraydata.insert(tmpdata[0] + 1, tmpdata[2][1])
         self.model.layoutChanged.emit()
 
-        # LOGGER.debug("\n!!!after 2nd insert!!! %s\n", self.model.arraydata)
+        # logger.debug("\n!!!after 2nd insert!!! %s\n", self.model.arraydata)
 
         # self.model.layoutChanged.emit()
 
-        LOGGER.debug("\n!!!after layoutCanged!!! %s\n", self.model.arraydata)
+        logger.debug("\n!!!after layoutCanged!!! %s\n", self.model.arraydata)
 
         # if isinstance(editor, (QTextEdit, QLineEdit)):
         if isinstance(self.editor, (QTextEdit, QLineEdit, QPlainTextEdit)):
-            self.emit(SIGNAL("commitData(QWidget*)"), self.editor)
-            self.emit(SIGNAL("closeEditor(QWidget*)"), self.editor)
+            # self.emit(SIGNAL("commitData(QWidget*)"), self.editor)
+            # self.emit(SIGNAL("closeEditor(QWidget*)"), self.editor)
 
-            # qDebug(" isinstance(editor, (QTextEdit, QLineEdit, QPlainTextEdit)): loop ")
+            self.commitData.emit(self.editor)
+            self.closeEditor.emit(self.editor)
 
         # manipulate model data
         # self.index.model.setData(self.index, " 0000 ")  # does not work: 'builtin_function_or_method' object has no attribute 'setData'
@@ -436,7 +438,7 @@ class MyDelegate(QStyledItemDelegate):
         # qDebug("tmpstr %s" % tmpstr)
 
         # print("tmpstr %s" % tmpstr)
-        LOGGER.debug("tmpstr %s", tmpstr)
+        logger.debug("tmpstr %s", tmpstr)
 
         # tmpstr = tmpstr.replace(ITAG, CTAG)
         # qDebug("1 tmpstr %s" % tmpstr)
@@ -444,7 +446,7 @@ class MyDelegate(QStyledItemDelegate):
         tmpstr = tmpstr.split(ITAG)
 
         # print("1 tmpstr %s" % tmpstr)
-        LOGGER.debug("1 tmpstr %s", tmpstr)
+        logger.debug("1 tmpstr %s", tmpstr)
 
         # ==== manual updating =======
         # self.model.setData(self.index, tmpstr[0])
@@ -497,7 +499,7 @@ def main():
 
     # w = MyWindow()
     # w = MyTable()
-    w = MyTable(myarray=[['x', 'y', 'z']])
+    w = MyTable(myarray=[["x", "y", "z"]])
 
     w.show()
     sys.exit(app.exec_())

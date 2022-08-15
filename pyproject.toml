@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ptextpad"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.3"
 description = "ptextpad"
 authors = ["ffreemt"]
 license = "MIT"
@@ -24,6 +24,9 @@ html2text = "^2020.1.16"
 pysrt = "^1.1.2"
 pysubs2 = "^1.4.2"
 nose = "^1.3.7"
+seg-text = "^0.1.2"
+requests = "^2.28.1"
+nltk = "^3.7"
 
 [tool.poe.executor]
 type = "poetry"
@@ -48,14 +51,15 @@ tunnel = {cmd = "ssh -CN ip_or_hostname_defined_in_hosts -L 9091:127.0.0.1:9091"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.1"
-flake8 = "^3.9.2"
+flake8 = "^4.0.1"
 pydocstyle = "^6.1.1"
 toml = "^0.10.2"
 # tbump = "^6.3.2"
 poethepoet = "^0.10.0"
+pytest-qt = "^4.1.0"
 
 [tool.poetry.scripts]
-"ptextpad" = "ptextpad.__main__:app"
+"ptextpad" = "ptextpad.__main__:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

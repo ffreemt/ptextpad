@@ -1,12 +1,6 @@
 [flake8]
-ignore =
-  D203,
-  # line too long
-  E501
-per-file-ignores =
-  # imported but unused
-  # __init__.py: F401
-  test_*.py: F401
+# E503: line break before binary operator, black's format style
+ignore = D203,E501,W503
 exclude =
   .git,
   __pycache__,
@@ -14,6 +8,7 @@ exclude =
   old,
   build,
   dist,
-  .venv
+  .venv,
   pad*.py
-max-complexity = 25
+max-line-length = 120
+max-complexity = 30

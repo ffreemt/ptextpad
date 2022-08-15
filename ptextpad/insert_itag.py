@@ -1,12 +1,14 @@
 """Insert ITAG ("|||")."""
 # pylint: disable=invaid-name
 
-from typing import Tuple, Optional, Union
+from typing import Optional, Tuple, Union
 
 itag_ = "|||"
 
 
-def insert_itag(text: str, pos: Union[int, Tuple[int, int]], itag: Optional[str] = None) -> str:
+def insert_itag(
+    text: str, pos: Union[int, Tuple[int, int]], itag: Optional[str] = None
+) -> str:
     """Insert itag.
 
     Args:

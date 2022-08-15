@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
+r"""Convert pdf to text.
+
 ## git  D:\Program Files\Git\mingw32\bin\pdftotext.exe
 pdftotext -h
 
@@ -39,12 +39,12 @@ Usage: pdftotext [options] <PDF-file> [<text-file>]
   -?                   : print usage information
 """
 
-import os
 import logging
+import os
 import subprocess
 import tempfile
 
-from nose.tools import (eq_, with_setup)
+from nose.tools import eq_, with_setup
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -66,12 +66,12 @@ def pdf_to_text(filepath, pages=None):
     # currdir = os.path.dirname(os.path.abspath(__file__))
     # pdftotextcmd = currdir + 'pdftotext.exe'
 
-    pdftotext1 = 'pdftotext.exe'
+    pdftotext1 = "pdftotext.exe"
 
     def get_page(page):
-        '''
+        """
         Get one page
-        '''
+        """
 
         # outputTf = tempfile.NamedTemporaryFile()
         # outputTf = tempfile.NamedTemporaryFile(mode="r+")
@@ -82,26 +82,37 @@ def pdf_to_text(filepath, pages=None):
         # pdftotext2.exe -f 2 -l 13 -nopgbrk -layout "经济学人特别报告：2030年的中国消费者（中文版）.pdf" # run ok
 
         # os.system(cmdline)
-        cmdline1 = pdftotext1 + ' -f ' + str(page) + ' -l ' + str(page) + \
-                    ' -nopgbrk -layout -enc UTF-8 ' + filepath
-        text = ''
+        cmdline1 = (
+            pdftotext1
+            + " -f "
+            + str(page)
+            + " -l "
+            + str(page)
+            + " -nopgbrk -layout -enc UTF-8 "
+            + filepath
+        )
+        text = ""
         with tempfile.TemporaryDirectory() as dirpath:
-            outfile = os.path.join(dirpath,'testtmp.txt')
+            outfile = os.path.join(dirpath, "testtmp.txt")
 
             try:
                 LOGGER.debug(" os.system(%s + ' ' + %s) ", cmdline1, outfile)
 
-                os.system(cmdline1 + ' ' + outfile)
+                os.system(cmdline1 + " " + outfile)
             except Exception as exc:
-                LOGGER.warning(" os.system(%s + ' ' + outfile) error: %s", cmdline1, exc)
+                LOGGER.warning(
+                    " os.system(%s + ' ' + outfile) error: %s", cmdline1, exc
+                )
                 LOGGER.warning(" Return ''")
 
             if os.path.exists(outfile):
-                with open(outfile, 'r', encoding='utf-8') as fhandle:
+                with open(outfile, "r", encoding="utf-8") as fhandle:
                     text = fhandle.read()
             else:
-                LOGGER.warning(" pdftotext cannot convert Page %s to text. Return ''", page)
-                return ''
+                LOGGER.warning(
+                    " pdftotext cannot convert Page %s to text. Return ''", page
+                )
+                return ""
 
             # text = outputTf.read()
 
@@ -110,36 +121,38 @@ def pdf_to_text(filepath, pages=None):
 
     # >>> output = subprocess.check_output(['ls','-l'])
 
-    text = ''
+    text = ""
     if pages:
         for page in pages:
             text += get_page(str(page))
     else:
-        cmdline1 = pdftotext1 + ' -nopgbrk -layout -enc UTF-8 ' + filepath
+        cmdline1 = pdftotext1 + " -nopgbrk -layout -enc UTF-8 " + filepath
         with tempfile.TemporaryDirectory() as dirpath:
             # outfile = os.path.join(dirpath.name,'testtmp.txt')
 
             # pdf_to_text.exe cant seem to handle files with unicode
             # make a copy
-            infile = os.path.join(dirpath, 'test.pdf')
-            with open(infile, 'wb') as infilehandle:
-                infilehandle.write(open(filepath, 'rb').read())
+            infile = os.path.join(dirpath, "test.pdf")
+            with open(infile, "wb") as infilehandle:
+                infilehandle.write(open(filepath, "rb").read())
 
-            outfile = os.path.join(dirpath, 'testtmp.txt')
+            outfile = os.path.join(dirpath, "testtmp.txt")
             try:
                 # text = subprocess.check_output([pdftotextexe, filepath, ' -nopgbrk '])
-                cmdline1 = pdftotext1 + ' -nopgbrk -layout -enc UTF-8 ' + infile
+                cmdline1 = pdftotext1 + " -nopgbrk -layout -enc UTF-8 " + infile
 
-                os.system(cmdline1 + ' ' + outfile)
+                os.system(cmdline1 + " " + outfile)
             except Exception as exc:
                 LOGGER.debug(" os.system(%s + ' ' + outfile), error: %s", cmdline1, exc)
                 return None
             if os.path.exists(outfile):
-                with open(outfile, 'r', encoding='utf-8') as fhandle:
+                with open(outfile, "r", encoding="utf-8") as fhandle:
                     text = fhandle.read()
             else:
                 LOGGER.debug(" pdftotext probably did not output anything.")
-                LOGGER.debug(" The file may not be a pdf or is password protect, or is a scanned file which will need OCR to obtain its text.")
+                LOGGER.debug(
+                    " The file may not be a pdf or is password protect, or is a scanned file which will need OCR to obtain its text."
+                )
                 LOGGER.debug("Return None.")
                 return None
     return text
@@ -148,8 +161,8 @@ def pdf_to_text(filepath, pages=None):
 def my_setup():
     """my_setup."""
 
-    fmt = '%(name)s-%(filename)s[ln:%(lineno)d]:'
-    fmt += '%(levelname)s: %(message)s'
+    fmt = "%(name)s-%(filename)s[ln:%(lineno)d]:"
+    fmt += "%(levelname)s: %(message)s"
     logging.basicConfig(format=fmt, level=logging.DEBUG)
 
 
@@ -222,7 +235,7 @@ def test_non_convertable_file_p1():
     """test_non_convertable_file p1+++."""
     filepath = r"D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\text_mat\西遊記英文.epub"
     out = pdf_to_text(filepath, [1])
-    exp = ''
+    exp = ""
     eq_(exp, out)
 
 
@@ -234,7 +247,8 @@ def test_non_convertable_file():
     exp = None
     eq_(exp, out)
 
-"""
+
+_ = r"""
 filepath = 'D:\\dl\\Dropbox\\mat-dir\\snippets-mat\\pyqt\\Sandbox\\test_files\\原版外刊双语精读材料 本期《The New York Times》精选 2016.10.17.pdf'
 In [13]: len(text)
 Out[13]: 12797

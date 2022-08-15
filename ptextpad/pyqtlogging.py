@@ -1,19 +1,15 @@
-# coding: utf8
-"""
-pyqt logging
-"""
+"""Run pyqt logging."""
 # pylint: disable=bare-except, invalid-name, c-extension-no-member,
 
 import logging
 import sys
 
-from neualigner.testdebug import testdebug  # testing logging
+# from neualigner.testdebug import testdebug  # testing logging
 
 # QtCore,
 from PyQt5 import QtGui, QtWidgets
 
 # ~ from PyQt4 import QtCore, QtGui
-
 
 # Uncomment below for terminal log messages
 FORMAT = "%(name)s - %(filename)s [line:%(lineno)d]"
@@ -83,12 +79,12 @@ class MyDialog(QtWidgets.QPlainTextEdit, QPlainTextEditLogger):
         logging.warning("that's not right")
         logging.error("foobar")
 
-        testdebug()
+        # testdebug()
 
 
 if __name__ == "__main__":
     # may run this in python interactively
-    from stream_to_logger import StreamToLogger
+    from .stream_to_logger import StreamToLogger
 
     stderr_logger = logging.getLogger("STDERR")
     sys.stderr = StreamToLogger(stderr_logger, logging.ERROR)
