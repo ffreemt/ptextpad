@@ -1,4 +1,3 @@
-# coding: utf8
 r"""Align two texts.
 
 texts_to_anchored_paras.py
@@ -42,6 +41,7 @@ import os
 import sys
 from copy import deepcopy
 from itertools import zip_longest
+import numpy as np
 from pathlib import Path
 from textwrap import dedent
 
@@ -61,7 +61,6 @@ from PyQt5.QtWidgets import (  # noqa
 )
 from set_loglevel import set_loglevel
 from radio_mlbee_client import radio_mlbee_client
-
 
 from ptextpad import __version__
 from ptextpad.fetch_url import FetchURL
@@ -93,7 +92,7 @@ from .zip_longest_middle import zip_longest_middle
 from . import send_to_table
 
 from .data_for_updating import data_for_mergeup
-
+from .update_tablemodel import update_cell, update_layout
 
 # from ptextpad.ui.neualigner_ui import Ui_MainWindow
 
@@ -221,7 +220,6 @@ class MyWindow(QMainWindow):
 # class MyWindow(QMainWindow, Ui_MainWindow):
 class MyWindow(QMainWindow):
     """Define mainwin."""
-
     srclang = ""
     tgtlang = ""
 
@@ -352,10 +350,11 @@ class MyWindow(QMainWindow):
         # self.actionImport.triggered.connect(self.plainTextEdit.test)
 
         # self.actionNew.triggered.connect(lambda file: self.open(file=1))
-        self.actionFile1.triggered.connect(lambda file: self.open(file=1))
+
+        self.actionFile1.triggered.connect(self.open)
 
         # open file 2
-        self.actionFile2.triggered.connect(lambda file: self.open(file=2))
+        self.actionFile2.triggered.connect(lambda: self.open(file=2))
 
         self.actionImport_URL_Xpath.triggered.connect(self.fetch_urlpop)
 
@@ -450,10 +449,12 @@ class MyWindow(QMainWindow):
             filec2 = "filec2"
             try:
                 filec1 = load_text("data/en.txt")
+                filec1 = load_text("data/Folding_Beijing_ch1-en.txt")
             except Exception as exc:
                 logger.error('load_text("data/en.txt") error: %s', exc)
             try:
                 filec2 = load_text("data/zh.txt")
+                filec2 = load_text("data/Folding_Beijing_ch1-zh.txt")
             except Exception as exc:
                 logger.error('load_text("data/zh.txt") error: %s', exc)
 
@@ -467,8 +468,9 @@ class MyWindow(QMainWindow):
             lines2 = [_.strip() for _ in filec2.splitlines() if _.strip()]
             _ = zip_longest_middle(lines1, lines2, fillvalue="")
 
-            # add third col
+            # add third col and convert to list
             _ = [*zip_longest(*zip(*_), [""], fillvalue="")]
+            _ = np.array(_).tolist()
 
             self.tableView_2.tablemodel.layoutAboutToBeChanged.emit()
             self.tableView_2.tablemodel.arraydata = _
@@ -1436,7 +1438,15 @@ class MyWindow(QMainWindow):
         logzero.loglevel(set_loglevel())
         logger.debug(" self.no_of_loadfiles: %s", self.no_of_loadfiles)
 
-        if not (file == 1 or file == 2):
+        # for actionFile1 trigger
+        file = int(file)
+        if file < 1:
+            file = 1
+
+        if int(file) > 2:
+            file = 2
+
+        if not (file == 1 or file == 2):  # wont be needed in fact
             logger.debug(
                 "open() Invalid file= %s supplied " "(ought to be 1 or 2), exiting...",
                 file,
@@ -1465,10 +1475,15 @@ class MyWindow(QMainWindow):
         else:
             self.file2 = self.filename
 
+        # switch to file tab
         logger.debug(" self.tabWidget.setCurrentIndex(0) ")
         self.tabWidget.setCurrentIndex(0)
 
-        filecontent = load_file_as_text(self.filename)
+        try:
+            filecontent = load_file_as_text(self.filename)
+        except Exception as exc:
+            logger.error(exc)
+            filecontent = str(exc)
 
         logger.debug("filecontent[:50]: %s", filecontent[:50])
 
@@ -1481,16 +1496,12 @@ class MyWindow(QMainWindow):
 
         filecontent = filecontent.splitlines()
         filecontent = [elm.strip() for elm in filecontent if elm.strip()]
-        filecontent = "\r\n\r\n".join(filecontent)
+        totlines = len(filecontent)
 
-        totlines = filecontent.count("\r\n")
-        fill_to_max = 80
-        if totlines < fill_to_max:
-            filecontent += "\r\n" * (fill_to_max - totlines)
+        # filecontent = "\n\n".join(filecontent)
+        # totlines = filecontent.count("\n\n")
 
         logger.debug("totlines: %s", totlines)
-
-        # self.tableView_1.myarray[0][0] = filecontent
 
         # langid.set_languages()
         if file == 1:
@@ -1500,7 +1511,6 @@ class MyWindow(QMainWindow):
             self.tgtlang = detect_lang(filecontent)
 
         # detect_lang used fastlid, old version of fastlid turns debug off
-
         logzero.loglevel(set_loglevel())
 
         if self.srclang == "" or self.srclang is None:
@@ -1543,35 +1553,39 @@ class MyWindow(QMainWindow):
 
         self.no_of_loadfiles += 1
 
-        # colno = (file - 1) % 2
-        colno = file - 1
-
         # self.tableView_1.myarray[0][colno] = filecontent
         if (
-            # len(self.tableView_1.tablemodel.arraydata) == 0
             not self.tableView_1.tablemodel.arraydata
         ):  # possible deleted to empty []
             self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
             self.tableView_1.tablemodel.arraydata = [["", "", ""]]
             self.tableView_1.tablemodel.layoutChanged.emit()
 
+        # -- update self.tableView_1.tablemodel as necessary
+
+        # file=1 to the left column, file=2 to the right col
+        colno = file - 1
+
         logger.debug("colno: %s", colno)
-
-        # self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
-        # self.tableView_1.tablemodel.layoutChanged.emit()
-
         logger.debug("Update tab0 col: %s", colno)
-        self.tableView_1.tablemodel.arraydata[0][colno] = filecontent
+
+        _ = """
         # self.resizeColumnsToContents()
         # self.tableView_1.resizeColumnsToContents()
         # self.tableView_1.resizeRowsToContents()
-
-        # qDebug(" %s: %s" % (self.filename, self.tableView_1.myarray))
-        # qDebug(" %s: %s" % (self.filename, self.tableView_1.myarray[0][0][:400]))  # noqa
+        self.tableView_1.tablemodel.arraydata[0][colno] = filecontent
 
         # update with signal for index: 0, colno
         index00 = self.tableView_1.tablemodel.createIndex(0, colno)
         self.tableView_1.tablemodel.dataChanged.emit(index00, index00)
+        # """
+        _ = np.array(self.tableView_1.tablemodel.arraydata)
+        logger.debug(" self.tableView_1.tablemodel.arraydata.shape: %s", _.shape)
+        if _.shape[0] > 1:
+            update_cell(self.tableView_1.tablemodel, 1, colno, filecontent)
+        else:
+            update_cell(self.tableView_1.tablemodel, 0, colno, filecontent)
+
         self.tableView_1.resizeRowsToContents()
 
         logger.debug(" done updating tab1 cell (0, %s) ", colno)
@@ -1765,8 +1779,7 @@ class MyWindow(QMainWindow):
         self.tabWidget.setCurrentIndex(1)  # switch to anchor tab
 
     def files_to_anchortab(self):
-        """Slot function for self actionAnchor."""
-
+        """Define slot function for self actionAnchor."""
         logger.debug(
             "files_to_anchortab(self): self.anchortab_dirty: %s ", self.anchortab_dirty
         )
@@ -2126,7 +2139,6 @@ class MyWindow(QMainWindow):
 
         self.paras_to_senttab()
         """
-
         if self.tabWidget.currentIndex() == 0 or self.tabWidget.currentIndex() == 3:
             return None
 

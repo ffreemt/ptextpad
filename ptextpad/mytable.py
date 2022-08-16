@@ -179,7 +179,7 @@ class MyTableModel(QAbstractTableModel):
         """Init."""
         super(MyTableModel, self).__init__(parent, *args)
 
-        self.header = ["text1", "text2", "llh"]
+        self.header = ["text1", "text2", "metric"]
         self.arraydata = datain
 
     def rowCount(self, parent):  # NOQA
@@ -203,9 +203,11 @@ class MyTableModel(QAbstractTableModel):
         ):
             return None
 
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignTop  # does not seem to have any effect
+
         # http://stackoverflow.com/questions/13121025/tableview-cell-delegates-qt-backgroundrole   if role == QtCore.Qt.BackgroundRole:  # noqa
         if role == Qt.BackgroundRole:
-
             # sgi salmon 	#C67171 198, 113, 113
             # mistyrose 1 (mistyrose) #FFE4E1 255, 228, 225
             # set rows with empty cell in col0 and col1 to salmon QColor(198, 113, 113)
@@ -481,7 +483,6 @@ class MyDelegate(QStyledItemDelegate):
     def setModelData(self, editor, model, index):  # noqa
         # model.setData(index, editor.text())
         model.setData(index, editor.toPlainText())
-        # qDebug("=setModelData=")
 
         # manipulate model
         # model.setData(index, editor.toPlainText()+'===' )
