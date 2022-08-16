@@ -113,7 +113,7 @@ autoload = os.environ.get("AUTOLOAD")
 
 logzero.loglevel(set_loglevel())
 logger.info("os.environ.get('LOGLEVEL'): %s", os.environ.get("LOGLEVEL"))
-logger.info("debug level: %s", set_loglevel())
+logger.info("log level: %s", set_loglevel())
 logger.debug("debug on: %s", set_loglevel())
 logger.debug("autoload: %s", autoload)
 
@@ -1001,8 +1001,6 @@ class MyWindow(QMainWindow):
             index1[-1].column()
 
         """
-        from data_for_updating import data_for_moveup
-
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
             index1 = mytable.selectedIndexes()
@@ -1498,8 +1496,8 @@ class MyWindow(QMainWindow):
         filecontent = [elm.strip() for elm in filecontent if elm.strip()]
         totlines = len(filecontent)
 
-        # filecontent = "\n\n".join(filecontent)
-        # totlines = filecontent.count("\n\n")
+        filecontent = "\n\n".join(filecontent)
+        totlines = filecontent.count("\n\n")
 
         logger.debug("totlines: %s", totlines)
 
@@ -1579,7 +1577,7 @@ class MyWindow(QMainWindow):
         index00 = self.tableView_1.tablemodel.createIndex(0, colno)
         self.tableView_1.tablemodel.dataChanged.emit(index00, index00)
         # """
-        _ = np.array(self.tableView_1.tablemodel.arraydata)
+        _ = np.array(self.tableView_1.tablemodel.arraydata, dtype=object)
         logger.debug(" self.tableView_1.tablemodel.arraydata.shape: %s", _.shape)
         if _.shape[0] > 1:
             update_cell(self.tableView_1.tablemodel, 1, colno, filecontent)

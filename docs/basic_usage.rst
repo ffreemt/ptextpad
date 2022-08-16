@@ -1,6 +1,15 @@
-Neualigner基本操作示范
+Ptextpad基本操作示范
 ==============================
-下面以Folding_Beijing_ch1-en.txt和Folding_Beijing_ch1-zh.txt两个文件示范各步的操作。启动Neualigner beta。
+
+.. |setanchorbut| image:: _static/setanchorbut.png
+    :width: 40pt
+
+.. |alignbut| image:: _static/alignbut.png
+    :width: 40pt
+
+备注： 打钉键（|setanchorbut|）仅在文件卡（File tab）有效；对齐键（|alignbut|）仅在段卡（Para tab）有效。
+
+下面以Folding_Beijing_ch1-en.txt和Folding_Beijing_ch1-zh.txt两个文件示范各步的操作。启动Ptextpad beta。
 
 载入
 --------------------------
@@ -224,7 +233,7 @@ Neualigner基本操作示范
     :align: center
     :alt: 选定多行
 
-再点击对齐键（|alignbut|），Neualigner将重新处理选定行的句句对齐：
+再点击对齐键（|alignbut|），Ptextpad将重新处理选定行的句句对齐：
 
 .. image:: _static/selected_rows_align2a.png
     :width: 500px
@@ -251,7 +260,7 @@ Neualigner基本操作示范
     :align: center
     :alt: 按下空格键
 
-确定指标值（Merit）无误即可按下回车键完成打钉操作，如下图：
+确定指标值（Metric）无误即可按下回车键完成打钉操作，如下图：
 
 .. image:: _static/tap_row_numbers3a.png
     :width: 500px

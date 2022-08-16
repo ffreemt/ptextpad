@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to ptextpad's howto!
+Welcome to Ptextpad's howto!
 ====================================
 
 Detailed documents will be furnished, soon. In the meantime, this Howto will hopefully get you started.

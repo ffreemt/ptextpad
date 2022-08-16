@@ -251,7 +251,7 @@ Neualigner基本操作示范
     :align: center
     :alt: 按下空格键
 
-确定指标值（Merit）无误即可按下回车键完成打钉操作，如下图：
+确定指标值（Metric）无误即可按下回车键完成打钉操作，如下图：
 
 .. image:: _static/tap_row_numbers3a.png
     :width: 500px

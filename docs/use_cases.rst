@@ -29,20 +29,20 @@
 
 此例模拟章章对照的双语资料。段段对照的双语资料以此类推。
 
-首先启动Neualigner。
+首先启动Ptextpad。
 
 * 载入文件
 
 .. |setanchorbut| image:: _static/setanchorbut.png
-    :width: 20pt
+    :width: 60pt
 
 .. |alignbut| image:: _static/alignbut.png
-    :width: 20pt
+    :width: 60pt
 
 .. |setmerits| image:: _static/setmerits.png
-    :width: 20pt
+    :width: 30pt
 
-点击载入文件1（快捷键Ctrl+1），文件2留空，点击自动打钉操作（|setanchorbut|），Neualigner会对双语文件做分离处理。
+点击载入文件1（快捷键Ctrl+1），文件2留空，点击自动打钉操作（|setanchorbut|），Ptextpad会对双语文件做分离处理。
 
 .. image:: _static/usecase1loading.png
     :width: 500px
@@ -78,7 +78,7 @@
     :align: center
     :alt: 第27行右列
 
-Merit置为1。
+Metric置为1。
 
 .. image:: _static/usecase1Merit1.png
     :width: 500px
@@ -161,7 +161,7 @@ Merit置为1。
 
 以《呼啸山庄》双语第一章为例。（当然也可以在下面的第一步和第二步直接从两个独立的文件载入源语言文本及目标语言文本。）
 
-启动Neualigner。
+启动Ptextpad。
 
 * 在文件卡（File tab）左列贴入源语言文本
 

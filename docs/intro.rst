@@ -8,7 +8,7 @@ Ptextpad(原名 Neualigner)是一款双语对齐软件。支持的导入文件�
 
 Ptextpad将对齐分成两步：段段“打钉”及句句对齐。段段层面上的打钉操作可以加速第二步的自动句句对齐的速度及质量。 Ptextpad支持自动“打钉”，也可以手动打钉。
 
-Ptext 0.1.0a0
+Ptext 0.1.0ax
 ------------------------
 * PyQt5
 * 大重组
@@ -59,12 +59,19 @@ Neualigner 0.6版
 
  - 日志卡（Log tab）里可查看程序运行的状态及各种信息（如输出文件的位置等）。
 
-* 指标（Merit）
+* 指标（Metric）
 
 段卡的第三列里用于显示对齐质量的数字。大于零表示左右两段被打钉定位。
 
+.. |setanchorbut| image:: _static/setanchorbut.png
+    :width: 40
 
-Ptextpad基本操作示范
+.. |alignbut| image:: _static/alignbut.png
+    :scale: 100%
+
+备注： 打钉键（|setanchorbut|）仅在文件卡（File tab）有效；对齐键（|alignbut|）仅在段卡（Para tab）有效。
+
+Ptextpad基本操作示例
 ==============================
 下面以Folding_Beijing_ch1-en.txt和Folding_Beijing_ch1-zh.txt两个文件示范各步的操作。启动Ptextpad beta。
 
@@ -317,7 +324,7 @@ Ptextpad基本操作示范
     :align: center
     :alt: 按下空格键
 
-确定指标值（Merit）无误即可按下回车键完成打钉操作，如下图：
+确定指标值（Metric）无误即可按下回车键完成打钉操作，如下图：
 
 .. image:: _static/tap_row_numbers3a.png
     :width: 500px
@@ -396,7 +403,7 @@ Ptextpad基本操作示范
     :align: center
     :alt: 第27行右列
 
-Merit置为1。
+Metric置为1。
 
 .. image:: _static/usecase1Merit1.png
     :width: 500px
@@ -515,7 +522,7 @@ Merit置为1。
         :align: center
         :alt: 6字上屏
 
-    同样，找到中文的正文标题“2016年美国的人权纪录”，点击11行右列选定，再按空格键。11字上屏。同时将指标数Merit设为1.
+    同样，找到中文的正文标题“2016年美国的人权纪录”，点击11行右列选定，再按空格键。11字上屏。同时将指标数Metric设为1.
 
     .. image:: _static/usecase2setright11.png
         :width: 500px

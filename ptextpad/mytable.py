@@ -177,7 +177,8 @@ class MyTableModel(QAbstractTableModel):
 
     def __init__(self, datain, parent=None, *args):
         """Init."""
-        super(MyTableModel, self).__init__(parent, *args)
+        # super(MyTableModel, self).__init__(parent, *args)
+        super().__init__(parent, *args)
 
         self.header = ["text1", "text2", "metric"]
         self.arraydata = datain
@@ -198,15 +199,15 @@ class MyTableModel(QAbstractTableModel):
         if not index.isValid():
             return None
 
-        elif not (
-            role == Qt.DisplayRole or role == Qt.EditRole or role == Qt.BackgroundRole
+        elif not (  # needed, or QFont::fromString: Invalid description '(empty)'
+            role == Qt.DisplayRole or role == Qt.EditRole or role == Qt.BackgroundRole  or role == Qt.TextAlignmentRole
         ):
             return None
 
         if role == Qt.TextAlignmentRole:
-            return Qt.AlignTop  # does not seem to have any effect
+            return Qt.AlignTop  # works
 
-        # http://stackoverflow.com/questions/13121025/tableview-cell-delegates-qt-backgroundrole   if role == QtCore.Qt.BackgroundRole:  # noqa
+        # http://stackoverflow.com/questions/13121025/tableview-cell-delegates-qt-backgroundrole
         if role == Qt.BackgroundRole:
             # sgi salmon 	#C67171 198, 113, 113
             # mistyrose 1 (mistyrose) #FFE4E1 255, 228, 225
@@ -258,12 +259,6 @@ class MyTableModel(QAbstractTableModel):
         if len(self.arraydata) == 0:  # modi 2017 02 24
             return None
         else:
-            _ = """
-            logger.debug(
-                "index.row(), index.column(): %s, %s", index.row(), index.column()
-            )
-            logger.debug("self.arraydata: %s", self.arraydata)
-            # """
             return self.arraydata[index.row()][index.column()]
 
     def setData(self, index, value, role=Qt.EditRole):  # noqa
