@@ -1,5 +1,11 @@
 r"""Align two texts.
 
+def on_align/self.on_align
+f[ .]on_align
+
+def paras_to_senttab/self.paras_to_senttab
+f[ .]paras_to_senttab
+
 texts_to_anchored_paras.py
 
 Modi copy of mat-dir\pyqt\neualigner-pyqt5\neualigner\__main__.py
@@ -170,7 +176,7 @@ class Worker(QObject):  # [for files_to_anchortab]
             tabdata = radio_mlbee_client(self.text1, self.text2)
         except Exception as exc:
             logger.error(exc)
-            tabdata
+            tabdata = [[str(exc), "", ""]]
 
         # selftabdataloaded = True
         # time.sleep(1)  # can this prevent crash?
@@ -431,8 +437,9 @@ class MyWindow(QMainWindow):
 
         # not implemented yet
         # TODO Import_Paras not_implemented: paras/sents
-        # self.actionImport_Paras.triggered.connect(self.not_implemented)
-        self.actionImport_Paras.triggered.connect(self.import_to_anchortab)
+        
+        self.actionImport_Paras.triggered.connect(self.not_implemented)
+        # self.actionImport_Paras.triggered.connect(self.import_to_anchortab)
 
         self.actionImport_Csv.triggered.connect(self.not_implemented)
         self.actionImport_TMX.triggered.connect(self.not_implemented)
@@ -1308,8 +1315,7 @@ class MyWindow(QMainWindow):
             update_table(self.tableView_3)
 
     def update_mytable2(self):
-        """
-        Update self.tableView_2.
+        """Update self.tableView_2.
 
         on
         self.setAnchorButton.clicked.connect()
@@ -2047,7 +2053,6 @@ class MyWindow(QMainWindow):
         self.actionAnchor.setEnabled(True)
         logger.debug(" self.thread.quit() ")
 
-    # @QtCore.pyqtSlot(list)
     @pyqtSlot(list)
     def set_senttab(self, tabdata):
         """Set senttab."""
@@ -2413,6 +2418,7 @@ def main():
     splash.show()
 
     splash.showMessage(rf"\n\Ptextpad {__version__} loading, it may take a while...")
+
     # SPLASH.showMessage("Loaded, coming up...")
     # from detect_lang import detect_lang
 

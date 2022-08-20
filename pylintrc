@@ -1,3 +1,5 @@
+[MASTER]
+extension-pkg-whitelist=PyQt5
 [EXCEPTIONS]
 # C0301 line too long
 # R0801 dup
