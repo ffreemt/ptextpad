@@ -17,7 +17,7 @@ def ranges(lst):
     pos = (j - i for i, j in enumerate(sorted_lst))
     t = 0
     for i, els in groupby(pos):
-        l = len(list(els))
+        l = len(list(els))  # noqa
         el = sorted_lst[t]
         t += l
         yield range(el, el + l)

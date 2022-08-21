@@ -72,13 +72,13 @@ def combine_len(ll1, i0) -> (str, str):
             delta = ll1a[i0]
             ll1a[i0 + 1] += delta  # prepare
 
-            ll1a = ll1a[i0 + 1 :]  # slicing 1:len1
+            ll1a = ll1a[i0 + 1:]  # slicing 1:len1
 
         elif i0 > 0 and i0 < len1:
             # pass
             delta = ll1a[i0]
             ll1a[i0 - 1] += delta  # prepare
-            ll1a = ll1a[:i0] + ll1a[i0 + 1 :]  # slicing
+            ll1a = ll1a[:i0] + ll1a[i0 + 1:]  # slicing
         else:
             logger.warning("i0:{} out of range.".format(i0))
             # delta = -1

@@ -1,16 +1,13 @@
-"""Detect language using longid.classify.
+"""Detect language using fastlid.
 
+Detect language using longid.classify.
 detct as Chinese if chinese_char_ratio>= threthold else dectect_language()
-
 """
 # import logging
 from typing import Optional
 
 from fastlid import fastlid
 from logzero import logger
-
-# LOGGER = logging.getLogger(__name__)
-# LOGGER.addHandler(logging.NullHandler())
 
 
 def detect_lang(text1: str, checklen: Optional[int] = None) -> str:
@@ -40,7 +37,6 @@ def detect_lang(text1: str, checklen: Optional[int] = None) -> str:
         # detected = langid.classify(text0)[0]
         detected = fastlid(text0)[0]
     except Exception as exc:
-        # LOGGER.debug(" langid.classify failed: %s", exc)
-        LOGGER.debug(" fastlid failed: %s", exc)
+        logger.warning(" fastlid failed: %s, set to en", exc)
 
     return detected

@@ -12,7 +12,6 @@ from .detect_lang import detect_lang
 from .align_blocks_final import align_blocks_final
 
 from .load_text import load_text
-from .load_text import load_text
 
 # from para_gc import check_avec
 

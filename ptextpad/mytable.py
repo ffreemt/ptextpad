@@ -200,7 +200,7 @@ class MyTableModel(QAbstractTableModel):
             return None
 
         elif not (  # needed, or QFont::fromString: Invalid description '(empty)'
-            role == Qt.DisplayRole or role == Qt.EditRole or role == Qt.BackgroundRole  or role == Qt.TextAlignmentRole
+            role == Qt.DisplayRole or role == Qt.EditRole or role == Qt.BackgroundRole or role == Qt.TextAlignmentRole
         ):
             return None
 

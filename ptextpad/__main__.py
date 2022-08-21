@@ -39,6 +39,9 @@ DONE D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\neualigner003\neualigner.py
     2 Done Set anchor fct/ui
     update_mytable2()
     gen_aligned_sentlist(nx3 list, srclang=srclang, tgtlang=tgtlang)
+
+self.plainTextEditLog = QtWidgets.QPlainTextEdit(self.tab_4)
+    self.plainTextEditLog.text.append()
 """
 # pylint: disable=inconsistent-return-statements, too-many-statements, too-many-public-methods, unused-import, invalid-name, pointless-string-statement, too-many-instance-attributes, too-few-public-methods, line-too-long, no-name-in-module, too-many-lines, too-many-locals, unused-variable,
 
@@ -47,11 +50,12 @@ import os
 import sys
 from copy import deepcopy
 from itertools import zip_longest
-import numpy as np
 from pathlib import Path
 from textwrap import dedent
 
 import logzero
+import numpy as np
+from icecream import ic
 from logzero import logger
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import QElapsedTimer, QObject, Qt, QThread, pyqtSignal, pyqtSlot
@@ -65,8 +69,8 @@ from PyQt5.QtWidgets import (  # noqa
     QProgressDialog,
     QSplashScreen,
 )
-from set_loglevel import set_loglevel
 from radio_mlbee_client import radio_mlbee_client
+from set_loglevel import set_loglevel
 
 from ptextpad import __version__
 from ptextpad.fetch_url import FetchURL
@@ -76,6 +80,15 @@ from ptextpad.msg_popup import msg_popup
 from ptextpad.popup_anchortab_dirty import popup_anchortab_dirty
 from ptextpad.qthread_func_with_progressbar import QThreadFuncWithQProgressBar  # noqa
 
+# from .send_to_table import Worker
+from . import send_to_table
+from .data_for_updating import (
+    data_for_mergedown,
+    data_for_mergeup,
+    data_for_movedown,
+    data_for_moveup,
+    data_for_splitdouble,
+)
 from .detect_lang import detect_lang
 from .gen_aligned_sentlist import gen_aligned_sentlist
 from .insert_itag import insert_itag
@@ -87,18 +100,14 @@ from .load_file_as_text import load_file_as_text
 from .logging_progress import logging_progress
 from .realign_selected_rows import realign_selected_rows
 from .remove_selected_rows import remove_selected_rows
+from .runnable import Worker as Rworker
 from .sep_chinese import sep_chinese
 
 # from texts_to_anchored_paras import texts_to_anchored_paras
 from .text_to_paras import text_to_paras
 from .twofiles_trunk import twofiles_trunk
-from .zip_longest_middle import zip_longest_middle
-
-# from .send_to_table import Worker
-from . import send_to_table
-
-from .data_for_updating import data_for_mergeup
 from .update_tablemodel import update_cell, update_layout
+from .zip_longest_middle import zip_longest_middle
 
 # from ptextpad.ui.neualigner_ui import Ui_MainWindow
 
@@ -129,6 +138,9 @@ logger.debug("autoload: %s", autoload)
 # turn off uic.loadUi debug messages
 uic.properties.logger.setLevel(logging.WARNING)
 uic.uiparser.logger.setLevel(logging.WARNING)
+
+# log tab: logtab.text.append(ic.format)
+ic.configureOutput(prefix="ptextpad -> ", includeContext=1)
 
 
 def _translate(context, text, disambig):
@@ -178,39 +190,16 @@ class Worker(QObject):  # [for files_to_anchortab]
             logger.error(exc)
             tabdata = [[str(exc), "", ""]]
 
+            # log tab self.plainTextEditLog
+            _ = str(exc)
+            self.plainTextEditLog.append(ic.format(_))
+
         # selftabdataloaded = True
         # time.sleep(1)  # can this prevent crash?
         self.tabdata_ready.emit(tabdata)
         logger.debug("self.tabdata_ready.emit(tabdata)")
 
         # time.sleep(1)  # can this prevent crash?
-        self.finished.emit()
-
-
-class Worker1(QObject):  # [paras_to_senttab] refer to Worker
-    """Worker1, not used."""
-
-    def __init__(self, list1, srclang, tgtlang, ratio_diff):
-        """Init."""
-        super(Worker1, self).__init__()
-        self.list1 = list1
-        self.srclang = srclang
-        self.tgtlang = tgtlang
-        self.ratio_diff = ratio_diff
-        # self.ratio_diff = 0.4
-
-    finished = pyqtSignal()
-    tabdata_ready = pyqtSignal(list)
-
-    # from worker.py
-    @pyqtSlot()
-    def get_tabdata(self):
-        """Slot for thread (QThread)."""
-        tabdata = gen_aligned_sentlist(
-            self.list1, self.srclang, self.tgtlang, self.ratio_diff
-        )  # noqa
-        # selftabdataloaded = True
-        self.tabdata_ready.emit(tabdata)
         self.finished.emit()
 
 
@@ -226,6 +215,7 @@ class MyWindow(QMainWindow):
 # class MyWindow(QMainWindow, Ui_MainWindow):
 class MyWindow(QMainWindow):
     """Define mainwin."""
+
     srclang = ""
     tgtlang = ""
 
@@ -272,26 +262,7 @@ class MyWindow(QMainWindow):
         self.sentfile = self.aligned_trunk + ".txt"
         self.tmxfile = self.aligned_trunk + ".tmx"
 
-        # self.parafile = 'dummy_anchored_paras.txt'
-        # self.sentfile = 'dummy.txt'
-        # self.tmxfile = 'dummy.tmx'
-
-        # self.srclang = ''
-        # self.tgtlang = ''
-        # set default
-
-        # langid.set_languages()
-
-        # load langid to reduce loading time later on  # noqa
-        # self.srclang = detect_lang('this is english.')
-
-        # load smallseg
-        # logger.debug("Loading smallseg...")
-        # from smallseg import SEG
-
-        # from sseg import SSEG
-
-        self.tgtlang = "chinese"
+        self.tgtlang = "zh"
         self.no_of_loadfiles = 0
 
         self.anchortab_dirty = False  # __init__
@@ -432,19 +403,19 @@ class MyWindow(QMainWindow):
 
         self.actionExport_Paras.triggered.connect(self.export_paras)
         self.actionExport_Sents.triggered.connect(self.export_sents)
-
         self.actionExport_TMX.triggered.connect(self.export_tmx)
 
         # not implemented yet
         # TODO Import_Paras not_implemented: paras/sents
-        
-        self.actionImport_Paras.triggered.connect(self.not_implemented)
+
+        self.actionImport_Paras.triggered.connect(self.not_implemented)  # TODO
         # self.actionImport_Paras.triggered.connect(self.import_to_anchortab)
 
-        self.actionImport_Csv.triggered.connect(self.not_implemented)
-        self.actionImport_TMX.triggered.connect(self.not_implemented)
+        self.actionImport_Csv.triggered.connect(self.not_implemented)  # TODO
+        self.actionImport_TMX.triggered.connect(self.not_implemented)  # TODO
 
         # switch to log tab
+        # self.tabWidget.setCurrentIndex(3)
         self.tabWidget.setCurrentIndex(0)
         # init ends
 
@@ -498,10 +469,21 @@ class MyWindow(QMainWindow):
             *******************************
               Welcome to Ptextpad %s!
               (formerly Neualigner)
+            To turn on debug, set environ LOGLEVEL=10
+            (e.g. in Windows: set LOGLEVEL=10 or
+            in Linux and Mac: export LOGLEVEL=10)
             *******************************
             """,
             __version__,
         )
+        _ = f"""
+            *******************************
+              Welcome to Ptextpad {__version__}!
+              (formerly Neualigner)
+              brought to you by mu@qq:41947782
+            *******************************
+            """
+        self.log_message(_)
 
     def fetch_urlpop(self):
         """Fetch url."""
@@ -509,7 +491,12 @@ class MyWindow(QMainWindow):
         # import  urlxpathtestmainwindow_ui.Ui_MainWindow  # not a package
         # from fetch_url import MyWindow
 
-        self.fetch_url = FetchURL(self)
+        try:
+            self.fetch_url = FetchURL(self)
+        except Exception as exc:
+            _ = f" {exc} (to be fixed)"  # TODO
+            QMessageBox.warning(self, "Hint", ic.format(_))
+            return None
         # self.fetch_url.page: in fetch_url.py: goButton ==> fetch_xpath
 
         # self.fetch_url.pushButton_2.clicked.connect(self.send_to_table)
@@ -634,93 +621,124 @@ class MyWindow(QMainWindow):
 
     # Export
     # self.actionExport_Paras.triggered.connect(lambda: list_to_csv(self.tableView_2.myarray, self.parafile))  # noqa
+    def log_message(self, msg):
+        """Send msg to log tab self.plainTextEditLog.text.append(msg)."""
+        self.plainTextEditLog.appendPlainText(msg)
 
     def export_paras(self):
         """Export anchored paras."""
         # switch to log tab
-        self.tabWidget.setCurrentIndex(3)
-        # list_to_csv(self.tableView_2.myarray, self.parafile)
-        list_to_csv(self.tableView_2.tablemodel.arraydata, self.parafile)
-        self.anchortab_dirty = False
+        _ = ic.format("diggin...")
+        self.log_message(_)
 
-        logger.info("\n\n Csv file written to %s \n\n", self.parafile)
-        os.startfile(os.path.dirname(self.parafile))
+        try:
+            self.tabWidget.setCurrentIndex(3)
+            # list_to_csv(self.tableView_2.myarray, self.parafile)
+            list_to_csv(self.tableView_2.tablemodel.arraydata, self.parafile)
+            self.anchortab_dirty = False
+
+            logger.info("\n\n Csv file written to %s \n\n", self.parafile)
+            os.startfile(os.path.dirname(self.parafile))
+            _ = f"Success: Csv file written to {self.parafile}"
+            self.log_message(_)
+        except Exception as exc:
+            logger.error(exc)
+            _ = ic.format(f"{exc} (to be fixed)")
+            self.log_message(_)
+            QMessageBox(self, "Hint", _)
 
     def export_sents(self):
         """Export sents."""
         # switch to log tab
-        self.tabWidget.setCurrentIndex(3)
-        # list_to_csv(self.tableView_3.myarray, self.sentfile)
-        list_to_csv(self.tableView_3.tablemodel.arraydata, self.sentfile)
-        self.senttab_dirty = False
+        _ = ic.format("diggin...")
+        self.log_message(_)
+        try:
+            self.tabWidget.setCurrentIndex(3)
+            # list_to_csv(self.tableView_3.myarray, self.sentfile)
+            list_to_csv(self.tableView_3.tablemodel.arraydata, self.sentfile)
+            self.senttab_dirty = False
 
-        logger.info("\n\n Csv file written to %s \n\n", self.sentfile)
-        self.anchortab_dirty = False
-        os.startfile(os.path.dirname(self.sentfile))
+            logger.info("\n\n Csv file written to %s \n\n", self.sentfile)
+            self.anchortab_dirty = False
+            os.startfile(os.path.dirname(self.sentfile))
+            self.log_message(f"Done: Csv file written to {self.sentfile}")
+        except Exception as exc:
+            logger.error(exc)
+            _ = f"{exc} (to be fixed)"
+            self.log_message(_)
+            QMessageBox(self, "Hint", ic.format(_))
 
     def export_tmx(self):
         """Export TMX."""
         # switch to log tab
-        self.tabWidget.setCurrentIndex(3)
+        _ = ic.format("diggin...")
+        self.log_message(_)
+        try:
+            self.tabWidget.setCurrentIndex(3)
 
-        # srclist = [elm[0] for elm in self.tableView_3.myarray]
-        # tgtlist = [elm[1] for elm in self.tableView_3.myarray]
-        srclist = [elm[0] for elm in self.tableView_3.tablemodel.arraydata]
-        tgtlist = [elm[1] for elm in self.tableView_3.tablemodel.arraydata]
+            # srclist = [elm[0] for elm in self.tableView_3.myarray]
+            # tgtlist = [elm[1] for elm in self.tableView_3.myarray]
+            srclist = [elm[0] for elm in self.tableView_3.tablemodel.arraydata]
+            tgtlist = [elm[1] for elm in self.tableView_3.tablemodel.arraydata]
 
-        # set language
-        lang_set = ["english", "chinese", "french", "italian", "german"]
-        tmxlang = dict(
-            zip(
-                ["english", "chinese", "french", "italian", "german"],
-                ["en-US", "zh-CN", "fr-Fr", "de-DE", "it-IT"],
-            )
-        )  # noqa
-        # http://www.lingoes.net/en/translator/langcode.htm
-        # https://github.com/LuminosoInsight/langcodes
-        if self.srclang not in lang_set:
-            srclang = "en-US"
-        else:
-            srclang = tmxlang[self.srclang]
+            # set language
+            lang_set = ["english", "chinese", "french", "italian", "german"]
+            lang_set = ["en", "zh", "fr", "it", "de"]
+            tmxlang = dict(
+                zip(
+                    # ["english", "chinese", "french", "italian", "german"],
+                    lang_set,
+                    ["en-US", "zh-CN", "fr-Fr", "it-IT", "de-DE"],
+                )
+            )  # noqa
+            # http://www.lingoes.net/en/translator/langcode.htm
+            # https://github.com/LuminosoInsight/langcodes
+            if self.srclang not in lang_set:
+                srclang = "en-US"
+            else:
+                srclang = tmxlang[self.srclang]
 
-        if self.tgtlang not in lang_set:
-            tgtlang = "en-US"
-        else:
-            tgtlang = tmxlang[self.tgtlang]
+            if self.tgtlang not in lang_set:
+                tgtlang = "en-US"
+            else:
+                tgtlang = tmxlang[self.tgtlang]
 
-        # here
-        title = "Export"
-        text = "Save as Tmx"
-        info = "Select language pair direction (source:target)"
-        yestext = srclang + ":" + tgtlang
-        notext = tgtlang + ":" + srclang
+            title = "Export"
+            text = "Save as Tmx"
+            info = "Select language pair direction (source:target)"
+            yestext = srclang + ":" + tgtlang
+            notext = tgtlang + ":" + srclang
 
-        ret_val = msg_popup(
-            title=title, text=text, info=info, details="", ytext=yestext, ntext=notext
-        )  # noqa
-        # ret_val = msg_popup(title=title, text=text, info=info, details='')  # noqa
+            ret_val = msg_popup(
+                title=title, text=text, info=info, details="", ytext=yestext, ntext=notext
+            )  # noqa
+            # ret_val = msg_popup(title=title, text=text, info=info, details='')  # noqa
 
-        if ret_val == QMessageBox.Yes:
-            tmxtext = lists_to_tmx(srclist, tgtlist, srclang, tgtlang)
-            pairlabel = "-" + srclang + "-" + tgtlang
-        elif ret_val == QMessageBox.No:
-            tmxtext = lists_to_tmx(tgtlist, srclist, tgtlang, srclang)
-            pairlabel = "-" + tgtlang + "-" + srclang
-        else:
-            return None
+            if ret_val == QMessageBox.Yes:
+                tmxtext = lists_to_tmx(srclist, tgtlist, srclang, tgtlang)
+                pairlabel = "-" + srclang + "-" + tgtlang
+            elif ret_val == QMessageBox.No:
+                tmxtext = lists_to_tmx(tgtlist, srclist, tgtlang, srclang)
+                pairlabel = "-" + tgtlang + "-" + srclang
+            else:
+                return None
 
-        # here
-        with open(
-            self.tmxfile[:-4] + pairlabel + ".tmx", "w", encoding="utf-8"
-        ) as tmxfile:  # noqa
-            tmxfile.write(tmxtext)
-        self.senttab_dirty = False
-        self.anchortab_dirty = False
-        logger.info("\n\n TMX file written to %s \n\n", self.tmxfile)
-        os.startfile(os.path.dirname(self.tmxfile))
+            with open(
+                self.tmxfile[:-4] + pairlabel + ".tmx", "w", encoding="utf-8"
+            ) as tmxfile:  # noqa
+                tmxfile.write(tmxtext)
+            self.senttab_dirty = False
+            self.anchortab_dirty = False
+            logger.info("\n\n TMX file written to %s \n\n", self.tmxfile)
+            os.startfile(os.path.dirname(self.tmxfile))
+            self.log_message(f"Done diggin: TMX file written to {self.tmxfile}")
+        except Exception as exc:
+            logger.error(exc)
+            _ = f"{exc} (to be fixed)"
+            self.log_message(_)
+            QMessageBox(self, "Hint", ic.format(_))
 
     # slots functions
-    # ########### here TODO ##########
     def set_row_numbers(self):
         """set row numbers"""
         from select_last_selected_rows import select_last_selected_rows
@@ -849,10 +867,10 @@ class MyWindow(QMainWindow):
 
     def splitdouble(self):
         """Splitdouble actionBreak |||."""
-        from data_for_updating import data_for_splitdouble
+        # from data_for_updating import data_for_splitdouble
 
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
-            """update_table."""
+            """Update_table."""
             logzero.loglevel(set_loglevel())
 
             # a list!
@@ -1008,6 +1026,7 @@ class MyWindow(QMainWindow):
             index1[-1].column()
 
         """
+
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
             index1 = mytable.selectedIndexes()
@@ -1079,7 +1098,6 @@ class MyWindow(QMainWindow):
             index1[-1].column()
 
         """
-        from data_for_updating import data_for_movedown
 
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
@@ -1182,7 +1200,7 @@ class MyWindow(QMainWindow):
             index1[-1].column()
 
         """
-        from data_for_updating import data_for_mergedown
+        # from data_for_updating import data_for_mergedown
 
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
@@ -1254,6 +1272,7 @@ class MyWindow(QMainWindow):
         if index1:
             index1[-1].column()
         """
+
         def update_table(mytable):  # pass self.tableView_[, 2, 3]]
             """update_table."""
             index1 = mytable.selectedIndexes()
@@ -1523,13 +1542,13 @@ class MyWindow(QMainWindow):
 
         if self.tgtlang == "" or self.tgtlang is None:
             logger.warning(" Cant detect tgtlang, setting to chinese...")
-            self.srclang = "chinese"
+            self.srclang = "zh"
 
         logger.debug(
             " self.srclang %s, self.tgtlang %s", self.srclang, self.tgtlang
         )  # noqa
 
-        if self.srclang == "chinese" and self.no_of_loadfiles == 1:
+        if self.srclang == "zh" and self.no_of_loadfiles == 1:
             _ = """
             msg = QMessageBox()
             msg.setWindowTitle("Wait...")
@@ -1558,9 +1577,7 @@ class MyWindow(QMainWindow):
         self.no_of_loadfiles += 1
 
         # self.tableView_1.myarray[0][colno] = filecontent
-        if (
-            not self.tableView_1.tablemodel.arraydata
-        ):  # possible deleted to empty []
+        if not self.tableView_1.tablemodel.arraydata:  # possible deleted to empty []
             self.tableView_1.tablemodel.layoutAboutToBeChanged.emit()
             self.tableView_1.tablemodel.arraydata = [["", "", ""]]
             self.tableView_1.tablemodel.layoutChanged.emit()
@@ -1914,7 +1931,7 @@ class MyWindow(QMainWindow):
 
             # Question, Information, Warning, Critical
             msg.setIcon(QMessageBox.Question)
-            msg.setText("You really want to do autoanchoring?")
+            msg.setText("You really want to do auto-anchoring?")
 
             msg.setInformativeText(
                 "Autoanchoring uses a net service (quota: 1000 paras per 60 minutes) and is slow (~4 min/1000 paras)."
@@ -1962,61 +1979,14 @@ class MyWindow(QMainWindow):
             # continue if user selects Yes
             self.tabWidget.setCurrentIndex(3)  # switch to log tab
 
-            # self.obj = worker.Worker(text1, text2)  # no parent!
-            # tabdata = texts_to_anchored_paras(self.text1, self.text2)
-
-            # self.obj = Worker(text1, text2, self.tgtlang)  # no parent!
-
             self.obj = Worker(text1, text2)
-
             self.thread = QThread()  # no parent!
-            # 3 - Move the Worker object to the Thread object
             self.obj.moveToThread(self.thread)
-
-            logger.debug(" moveToThread ")
-
-            # 5 - Connect Thread started signal to Worker operational slot method  # noqa
             self.thread.started.connect(self.obj.get_tabdata)
-
-            logger.debug(" thread.started.connect(self.obj.get_tabdata) ")
-
-            # 2 - Connect Worker`s Signals to Form method slots to post data.
             self.obj.tabdata_ready.connect(self.set_anchors)
-
-            logger.debug(" tabdata_ready.connect(self.set_anchors) ")
-
-            # 4 - Connect Worker Signals to the Thread slots
-            # self.obj.finished.connect(self.thread.quit)
-
-            # the finished signal canbe replaced by tabdata_ready signal in this case  # noqa
-            self.obj.finished.connect(
-                self.on_tabdata_finished
-            )  # self.thread.quit;  # noqa self.actionAnchor.setEnabled(True)
-
-            logger.debug(
-                " self.obj.finished.connect(self.on_tabdata_finished) "
-            )  # noqa
-
-            # * - Thread finished signal will close the app if you want!
-            # self.thread.finished.connect(app.exit)
-
-            # 6 - Start the thread
-            # time.sleep(1.5)
-
+            self.obj.finished.connect(self.on_tabdata_finished)
             self.obj.workRequested.connect(self.thread.start)
-            logger.debug(
-                " set_tabdata: workRequested.connect(self.thread.start) "
-            )  # noqa
-
-            # self.thread.start()
-            # logger.debug(" self.thread.start ")
-
             self.obj.request_work()
-
-            logger.debug(" workRequested.connect ")
-
-            # logger.debug("self.tabdata: %s " % self.tabdata)
-
             # self.actionAnchor.setEnabled(True)
 
         # self.tabdata = [['1', '2', '3'], ['4', '5', '6'],  ['7', '8', '9']]
@@ -2086,8 +2056,7 @@ class MyWindow(QMainWindow):
         self.tabWidget.setCurrentIndex(2)
 
     def on_anchor(self):
-        """
-        On anchor butt (actionAnchor) clicked.
+        """Respond to anchor butt (actionAnchor) clicked.
 
         self.tabWidget.currentIndex() == 1:  # anchortab
             (self.tableView_2)
@@ -2104,7 +2073,11 @@ class MyWindow(QMainWindow):
         )
 
         # if self.tabWidget.currentIndex() == 2 or self.tabWidget.currentIndex() == 3:
-        if self.tabWidget.currentIndex() == 2:
+        _ = self.tabWidget.currentIndex()
+        if _ in [2, 3]:  # sent tab or log tab
+            _ = f"""You are on {"Sent tab" if _ in [2] else "Log tab"}. Switch to Files tab or Para tab to use this function"""
+            QMessageBox.information(self, "Hint", _)
+            self.log_message(ic.format(_))
             return None
 
         # file tab 0 or anchor tab 1
@@ -2263,7 +2236,6 @@ class MyWindow(QMainWindow):
         # time.sleep(2)
         # self.thread1.start()
 
-    # def dispsum(self):
     def dispmsg(self):
         """Display a message."""
         # self.anchorValid = True  # carry out in adjustment of anchor tab only when anchorValid == True  # noqa
@@ -2318,8 +2290,8 @@ class MyWindow(QMainWindow):
         """Ptextpad About pop up."""
         QMessageBox.about(
             self,
-            "About Ptext",
-            """<html><head/><body><p><span style=" font-weight:600; color:#0000ff;">Ptextpad (formerly Neualigner) </span><span style=" color:#0000ff;"> v %s</span></p><p><span style=" color:#0000ff;">Coffeeware 2017 mu qq41947782. All rights reserved.</span></p><p><span style=" color:#0000ff;">This application can be used to perform dual text alignments</span>.</p></body></html>"""
+            "About Ptextpad",  # 2017
+            """<html><head/><body><p><span style=" font-weight:600; color:#0000ff;">Ptextpad (formerly Neualigner) </span><span style=" color:#0000ff;"> v %s</span></p><p><span style=" color:#0000ff;">Coffeeware 2022 mu qq41947782. All rights reserved.</span></p><p><span style=" color:#0000ff;">This application can be used to perform dual text alignments</span>.</p></body></html>"""
             % __version__,
         )  # noqa
 
@@ -2332,7 +2304,7 @@ class MyWindow(QMainWindow):
         QMessageBox.about(
             self,
             "Sorry",
-            """<html><head/><body><p><span style=" color:#0000ff;">Not implemented yet, stay tuned. </span>.</p></body></html>""",
+            """<html><head/><body><p><span style=" color:#0000ff;">Not implemented/fixed yet, stay tuned. </span></p></body></html>""",
         )  # noqa
 
     def split_cell(self):
@@ -2389,9 +2361,9 @@ class MyWindow(QMainWindow):
 def main():
     """main."""
     # from stream_to_logger import StreamToLogger
-
     # send stderr to log tab
-    stderr_logger = logging.getLogger("STDERR")
+
+    # stderr_logger = logging.getLogger("STDERR")
 
     # pipe to log Tab (3)
     # TODO fix stream_to_logger.StreamToLogger crash

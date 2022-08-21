@@ -84,7 +84,7 @@ def test_():
     assert epub_to_txt(fileepub) is None
 
     fileepub = r"txt-books\To Kill a Mockingbird\To Kill a Mockingbird.mobi"
-    fileepub = "data/To Kill a Mockingbird\To Kill a Mockingbird.mobi"
+    fileepub = r"data/To Kill a Mockingbird\To Kill a Mockingbird.mobi"
     assert epub_to_txt(fileepub) is None
 
     fileepub = r"txt-books\Folding_Beijing-en.epub"

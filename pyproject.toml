@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ptextpad"
-version = "0.1.0-alpha.3"
+version = "0.1.0-alpha.4"
 description = "ptextpad"
 authors = ["ffreemt"]
 license = "MIT"

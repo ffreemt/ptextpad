@@ -255,7 +255,7 @@ def test_op_check():
     ):  # irow + row_numbers >= len0 => row_numbers = len0 - irow
         row_numbers = len0 - irow
 
-    expected = expected[:irow] + rows_to_add + expected[irow + row_numbers : len0]
+    expected = expected[:irow] + rows_to_add + expected[irow + row_numbers:len0]
 
     # with deepcopy
     # out = update_list(list0, irow, row_numbers, rows_to_add)
