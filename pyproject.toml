@@ -43,7 +43,7 @@ build = "poetry build"
 publish = "poetry publish"
 release = ["test", "build", "publish"]
 lint = { cmd = "pylint ptextpad" }
-isort = "isort tests ptextpad"
+isort = "isort --profile=black tests ptextpad"
 black = "black tests ptextpad"
 format = ["isort", "black"]
 docstyle = "pydocstyle --convention=google tests ptextpad"
