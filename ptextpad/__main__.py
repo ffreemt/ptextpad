@@ -1,9 +1,9 @@
 r"""Align two texts.
 
-def on_align/self.on_align
+d e f on_align/self.on_align
 f[ .]on_align
 
-def paras_to_senttab/self.paras_to_senttab
+d e f paras_to_senttab/self.paras_to_senttab
 f[ .]paras_to_senttab
 
 texts_to_anchored_paras.py
@@ -48,6 +48,7 @@ self.plainTextEditLog = QtWidgets.QPlainTextEdit(self.tab_4)
 import logging
 import os
 import sys
+
 from copy import deepcopy
 from itertools import zip_longest
 from pathlib import Path
@@ -58,7 +59,7 @@ import numpy as np
 from icecream import ic
 from logzero import logger
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import QElapsedTimer, QObject, Qt, QThread, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QElapsedTimer, QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (  # noqa
     QApplication,
@@ -69,8 +70,10 @@ from PyQt5.QtWidgets import (  # noqa
     QProgressDialog,
     QSplashScreen,
 )
+
 from radio_mlbee_client import radio_mlbee_client
 from set_loglevel import set_loglevel
+from stop_thread import stop_thread
 
 from ptextpad import __version__
 from ptextpad.fetch_url import FetchURL
@@ -79,6 +82,8 @@ from ptextpad.load_text import load_text
 from ptextpad.msg_popup import msg_popup
 from ptextpad.popup_anchortab_dirty import popup_anchortab_dirty
 from ptextpad.qthread_func_with_progressbar import QThreadFuncWithQProgressBar  # noqa
+
+from ptextpad.mlbee_client import mlbee_client
 
 # from .send_to_table import Worker
 from . import send_to_table
@@ -100,7 +105,7 @@ from .load_file_as_text import load_file_as_text
 from .logging_progress import logging_progress
 from .realign_selected_rows import realign_selected_rows
 from .remove_selected_rows import remove_selected_rows
-from .runnable import Worker as Rworker
+from .runnable import Worker as RWorker
 from .sep_chinese import sep_chinese
 
 # from texts_to_anchored_paras import texts_to_anchored_paras
@@ -123,6 +128,8 @@ from .zip_longest_middle import zip_longest_middle
 # logger = logging.getLogger(__name__)
 # logger.addHandler(logging.NullHandler())
 
+tab_names = ["Files", "Paras(SetAnchor)", "Sents", "Log"]
+
 # set env var autoload to turn on
 autoload = os.environ.get("AUTOLOAD")
 
@@ -140,7 +147,11 @@ uic.properties.logger.setLevel(logging.WARNING)
 uic.uiparser.logger.setLevel(logging.WARNING)
 
 # log tab: logtab.text.append(ic.format)
-ic.configureOutput(prefix="ptextpad -> ", includeContext=1)
+ic.configureOutput(
+    prefix="ptextpad -> ",
+    includeContext=True,
+    # outputFunction=logger.info,
+)
 
 
 def _translate(context, text, disambig):
@@ -273,6 +284,10 @@ class MyWindow(QMainWindow):
         self.anchorValid1 = False
         self.anchorValid2 = False
         self.anchorValid3 = False
+
+        # RWorker related
+        self.threadpool = QThreadPool()
+        self.thread_ident = -1
 
         self.actionAnchor.setEnabled(True)
         self.actionAlign.setEnabled(False)
@@ -615,7 +630,7 @@ class MyWindow(QMainWindow):
         """Import pandas as pd."""
         # from excel_to_list import excel_to_list
 
-        # refeer to def files_to_anchortab|def set_anchors
+        # refee to def files_to_anchortab|def set_anchors
         # call self.set_anchors
         self.tabWidget.setCurrentIndex(1)
 
@@ -741,7 +756,7 @@ class MyWindow(QMainWindow):
     # slots functions
     def set_row_numbers(self):
         """set row numbers"""
-        from select_last_selected_rows import select_last_selected_rows
+        from .select_last_selected_rows import select_last_selected_rows
 
         if self.tabWidget.currentIndex() != 1:  # anchor tab
             return None
@@ -1341,7 +1356,7 @@ class MyWindow(QMainWindow):
         based on ui inputs (self.lrowno, self.rrowno, self.merit)
         get
         """
-        from set_anchor_extra_outputs import set_anchor_extra_outputs
+        from .set_anchor_extra_outputs import set_anchor_extra_outputs
 
         # out1, at_row, row_numbers, rows_to_add = set_anchor_extra_outputs(testarray, lpos, rpos)  # test_35()  # noqa
         # proceed only when all three are True
@@ -1392,7 +1407,10 @@ class MyWindow(QMainWindow):
         # out2 = deepcopy(self.tableView_2.myarray)
         out2 = deepcopy(self.tableView_2.tablemodel.arraydata)
         for ith in range(row_numbers):
-            out2.pop(at_row)
+            try:
+                out2.pop(at_row)
+            except Exception as exc:
+                logger.error("exc: %s (ith: %s, at_row: %s)", exc, ith, at_row)
 
         for ith, elm in enumerate(rows_to_add):
             out2.insert(at_row + ith, elm)
@@ -1799,8 +1817,313 @@ class MyWindow(QMainWindow):
         # time.sleep(1)  # to avoid occasional crash?
         self.tabWidget.setCurrentIndex(1)  # switch to anchor tab
 
+    def files_to_anchortab_pbar(self):  # oh_no
+        """Define slot function for self.on_anchor.
+
+        actionAnchor.triggered.connect(self.on_anchor).
+
+        using runnable.Worker and QThreadpool.
+        """
+        logger.debug("entry: files_to_anchortab_pbar")
+
+        # --- begin files_to_anchortab copy
+        logger.debug(
+            "files_to_anchortab(self): self.anchortab_dirty: %s ", self.anchortab_dirty
+        )
+
+        if self.anchortab_dirty:
+            # ret_val = self.popup_anchortab_dirty()
+            ret_val = popup_anchortab_dirty()
+            if ret_val != QMessageBox.Yes:
+                return None  # only proceed when Yes is clicked.
+
+        # get self.aligned_trunk
+        try:
+            self.aligned_trunk = twofiles_trunk(self.file1, self.file2)
+
+            self.parafile = self.aligned_trunk + "_anchored_paras.txt"
+            self.sentfile = self.aligned_trunk + ".txt"
+            self.tmxfile = self.aligned_trunk + ".tmx"
+
+            logger.debug("self.file1 +%s+, self.file2 +%s+", self.file1, self.file2)
+            logger.debug(" self.aligned_trunk %s ", self.aligned_trunk)
+            logger.debug(" self.parafile %s ", self.parafile)
+
+        except Exception as exc:
+            logger.debug(
+                "self.aligned_trunk = twofiles_trunk(self.file1, self.file2) exc: %s",
+                exc,
+            )
+
+        # text1 and text 2 from file tab
+        # seq1, ll1 = get_para(file1)
+        # seq2, ll2 = get_para(file2)
+
+        # switch to log tab
+        # self.tabWidget.setCurrentIndex(3)
+        # time.sleep(2)
+
+        # disable button to prevent repeated clicked
+        # remember to turn it on later on
+
+        # read from the File tab
+        # text1 = str(self.tableView_1.myarray[0][0])
+        # text2 = str(self.tableView_1.myarray[0][1])
+        text1 = str(self.tableView_1.tablemodel.arraydata[0][0])
+        text2 = str(self.tableView_1.tablemodel.arraydata[0][1])
+
+        if not text1.strip():
+            logger.warning(
+                " The source language column in File tabs empty, load files first."
+            )
+            QMessageBox.about(
+                self,
+                "The source language column is empty",
+                """<html><head/><body><p><span style=" color:#0000ff;">Please load files first. </span>.</p></body></html>""",
+            )  # noqa
+            self.actionAnchor.setEnabled(True)
+            return None
+
+        self.actionAnchor.setEnabled(True)
+
+        logger.debug(" self.actionAnchor.setEnabled(True) ")
+
+        # seq1 = text_to_paras(text1)
+        # seq2 = text_to_paras(text2)
+        # self.tabdata = texts_to_anchored_paras(seq1, seq2)
+
+        # setup for mixed page: only file 1 contains data
+        if text1.strip() and not text2.strip():
+            logger.debug(
+                " if text1.strip() and not text2.strip(): setup for mixed page: only file 1 contains data "
+            )
+        if text1.strip() and not text2.strip():
+
+            # seems to have problem with Inno Setup
+            # msg = QMessageBox()
+            # msg.setWindowTitle("Wait...")
+            # msg.setWindowIcon(QIcon('images/Anchor-48.png'))
+            # msg.setIcon(QMessageBox.Information)
+            # msg.setText("Proceed?")
+
+            # msg.setInformativeText("The target language (right) column of the File tab is empty.")  # noqa
+            # msg.setDetailedText("If you click Yes, the left column will be treated as a mixture of dual languge text. Neualigner will attempt to separate and align the texts. If this is not what you want, click No and then load the target language column.")  # noqa
+
+            self.tabWidget.setCurrentIndex(3)  # switch to log tab
+
+            logger.debug(" tabdata1 = sep_chinese() ")
+            try:
+                tabdata1 = sep_chinese(text1)  # nx2 list
+            except Exception as exc:
+                logger.debug(" tabdata1 = sep_chinese() exc: %s", exc)
+                logger.debug("text1: +%s+", text1)
+                return None
+
+            # set self.srclang and self.tgtlang, not really necessary since autoanchoring is not used in this case
+            # needed for realign_selected_rows
+            text1 = " ".join([elm[0] for elm in tabdata1])
+            text2 = " ".join([elm[1] for elm in tabdata1])
+
+            # langid.set_languages()
+            try:
+                self.srclang = detect_lang(text1[:2000])
+            except Exception as exc:
+                logger.debug(" self.srclang = detect_lang(text1[:2000]) exc: %s", exc)
+
+            try:
+                self.tgtlang = detect_lang(text2[:2000])
+            except Exception as exc:
+                logger.debug(" self.tgtlang = detect_lang(text2[:2000]): exc: %s", exc)
+
+            logger.debug(
+                "self.srclang: %s, self.tgtlang: %s", self.srclang, self.tgtlang
+            )
+            # attache the last col
+            tabdata1 = [elm + [""] for elm in tabdata1]
+
+            # tabdata1 => tabdata
+            # use simple zip_longest_middle, anchor more or less there
+            self.set_anchors(tabdata1)
+            self.anchortab_dirty = True
+
+            self.actionAnchor.setEnabled(True)
+            return None
+
+        if text1.strip() and text2.strip():
+
+            # msgpopup to ask for non network
+            msg = QMessageBox()
+            msg.setWindowTitle("Wait...")
+
+            # Question, Information, Warning, Critical
+            msg.setIcon(QMessageBox.Question)
+            msg.setText("You really want to do auto-anchoring?")
+
+            api_url_ = "https://hf.space/embed/mikeee/radio-mlbee/+/api/predict/"
+            msg.setInformativeText(
+                f"Auto-anchoring uses a net service at {api_url_}."
+            )
+            msg.setDetailedText(
+                "If you click Yes, autoanchoring will start. (It's "
+                "very important to correct anchors wrongly set by "
+                "autoanchoring. You may wish to visually examine the "
+                "anchor tab and reset those anchors.) Or you can "
+                "click No for manually setting the anchors. "
+                "There is no need to set too many anchors, one "
+                "anchor for about every 20-50 paras is enough. "
+                "Or you can click Cancel to do nothing."
+            )
+
+            msg.setStandardButtons(
+                QMessageBox.No | QMessageBox.Yes | QMessageBox.Cancel
+            )  # noqa
+            ret_val = msg.exec_()
+
+            if ret_val == QMessageBox.Cancel:  # do nothing
+                self.actionAnchor.setEnabled(True)
+                return None
+
+            # langid.set_languages()
+
+            self.srclang = detect_lang(text1[:2000])
+            self.tgtlang = detect_lang(text2[:2000])
+            logger.debug(
+                "self.srclang: %s, self.tgtlang: %s", self.srclang, self.tgtlang
+            )
+
+            # no auto, simple zip_longest_middle
+            if ret_val == QMessageBox.No:
+                # text1 = self.text1[:]
+                # text2 = self.text2[:]
+                para1 = text_to_paras(text1)
+                para2 = text_to_paras(text2)
+                tabdata = zip_longest_middle(para1, para2, fillvalue="")
+                tabdata = [[elm[0], elm[1], ""] for elm in tabdata]
+                self.set_anchors(tabdata)
+
+                return None
+
+            # continue if user selects Yes
+            self.tabWidget.setCurrentIndex(3)  # switch to log tab
+
+        # --- end files_to_anchortab copy
+        if not (text1.strip() and text2.strip()):
+            QMessageBox.information(self, "Hint", "Empty tex, nothing to do")
+            return None
+        logzero.loglevel(set_loglevel())
+        logger.debug("RWorker(mlbee_client, text1, text2)")
+
+        # kwargs for radio_mlbee_client
+        #   split_to_sents: bool = False,
+        #   api_url: Optional[str] = None,
+
+        # seg to sents
+        # worker = RWorker(mlbee_client, text1, text2, split_to_sents=True)
+
+        worker = RWorker(mlbee_client, text1, text2)
+
+        worker.sig.result.connect(self.process_output)
+        worker.sig.finished.connect(self.thread_complete)
+        worker.sig.progress.connect(self.progress_fn)
+
+        self.worker = worker
+        self.threadpool.start(worker)
+
+    def process_output(self, result):  # sig result
+        """Process output from RWorker (radio_mlbee_client."""
+        logger.debug("sig result emitted: %s", type(result))
+        _ = self.worker.data.get(self.thread_ident)
+
+        # proceed when when normal ("done"), not "abored" nor "exception"
+        if _ is not None and _.get("done"):
+            try:
+                _ = "Sending to AnchorTab"
+                logger.debug(_)
+                self.log_message(ic.format(_))
+                self.set_anchors(result)
+            except Exception as exc:
+                logger.error(exc)
+            else:
+                QMessageBox.information(self, "Hint", "Success!")
+                _ = "Sent to AnchorTab"
+                logger.debug(_)
+                self.log_message(ic.format(_))
+
+    def thread_complete(self):  # sig finished
+        """Do cleanup."""
+        logger.debug("thread_complete")
+        # only popup when done and exception
+        logger.debug("sig finished emitted")
+        thread_ident = self.thread_ident
+        _ = self.worker.data.get(thread_ident)
+        if _ is not None and _.get("done"):
+            # QMessageBox.information(self, "Info", f"{thread_ident} completed")
+            self.worker.data.pop(thread_ident)
+        elif _ is not None and _.get("exception"):
+            QMessageBox.information(self, "Info", f"{thread_ident} exception")
+
+    def stop_thread(self):
+        stop_thread(self.thread_ident)
+        QMessageBox.information(self, "Info", "Aborted 1")
+
+    def progress_fn(self, progress):
+        """Handle progress related stuff."""
+        if progress.get("thread_ident") is not None:
+            self.thread_ident = progress.get("thread_ident")
+            logger.debug("self.thread_ident: %s", self.thread_ident)
+            self.worker.data.update({self.thread_ident: {}})
+
+        if progress.get("max_step") is not None:
+            self.max_step = progress.get("max_step")
+            logger.debug(" progress_fn self.max_step: %s", self.max_step)
+
+            self.progress = QProgressDialog(self)
+            self.progress.setWindowTitle("Please wait")
+            self.progress.setLabelText("diggin...")
+            self.progress.setCancelButtonText("Abort")
+
+            self.progress.setMinimumDuration(2000)
+            self.progress.setWindowModality(Qt.WindowModal)
+
+            self.progress.setRange(0, self.max_step)
+            self.progress.setHidden(0)
+
+            self.progress.canceled.connect(self.stop_thread)
+
+        step = progress.get("step")
+        if step is not None:
+            self.progress.setValue(step)
+
+        # aborted
+        if progress.get("aborted") is not None:
+            # QMessageBox.information(self, "Info", "Aborted 2")
+            if self.worker.data.get(self.thread_ident) is not None:
+                self.worker.data[self.thread_ident].update({"aborted": True})
+
+        # exception
+        if progress.get("exception") is not None:
+            # QMessageBox.information(self, "Info", "Exception")
+            if self.worker.data.get(self.thread_ident) is not None:
+                self.worker.data[self.thread_ident].update({"exception": True})
+
+        # done
+        if progress.get("done") is not None:
+            if self.max_step <= 0:
+                self.progress.setRange(0, 1)
+                self.progress.setValue(1)
+                self.progress.cancel()
+            self.worker.data[self.thread_ident].update({"done": True})
+
+        # log_message
+        _ = progress.get("log_message")
+        if _ is not None:
+            self.log_message(_)
+
     def files_to_anchortab(self):
-        """Define slot function for self actionAnchor."""
+        """Define slot function for self.on_anchor.
+
+        actionAnchor.triggered.connect(self.on_anchor).
+        """
         logger.debug(
             "files_to_anchortab(self): self.anchortab_dirty: %s ", self.anchortab_dirty
         )
@@ -2074,8 +2397,8 @@ class MyWindow(QMainWindow):
 
         # if self.tabWidget.currentIndex() == 2 or self.tabWidget.currentIndex() == 3:
         _ = self.tabWidget.currentIndex()
-        if _ in [2, 3]:  # sent tab or log tab
-            _ = f"""You are on {"Sent tab" if _ in [2] else "Log tab"}. Switch to Files tab or Para tab to use this function"""
+        if _ in [1, 2, 3]:  # paras tab sents tab or log tab
+            _ = f"""You are on {tab_names[_]} tab. Switch to Files tab to use this function"""
             QMessageBox.information(self, "Hint", _)
             self.log_message(ic.format(_))
             return None
@@ -2100,7 +2423,8 @@ class MyWindow(QMainWindow):
                 " current tabWidget 0 (file tab) or 3 (Log tab): +%s+, anchor butt pressed. --> self.files_to_anchortab()",
                 self.tabWidget.currentIndex(),
             )
-            self.files_to_anchortab()
+            # self.files_to_anchortab()
+            self.files_to_anchortab_pbar()
 
     def on_align(self):
         """
@@ -2115,7 +2439,20 @@ class MyWindow(QMainWindow):
 
         self.paras_to_senttab()
         """
-        if self.tabWidget.currentIndex() == 0 or self.tabWidget.currentIndex() == 3:
+        # if self.tabWidget.currentIndex() == 0 or self.tabWidget.currentIndex() == 3: return None
+        _ = self.tabWidget.currentIndex()
+        rows_slected = self.tableView_3.selectionModel().selectedRows()
+
+        # paras tab or log tab OR sents tab and nothing selected
+        if _ in [0, 3] or _ in [2] and not rows_slected:
+            _ = f"""You are on {tab_names[_]} tab. Switch to Paras/SetAnchor tab to use this function"""
+            _ = dedent(f"""
+                    In order to use this function, you must be
+                    on {tab_names[1]} tab, or on {tab_names[2]} tab with
+                    some row selected.""")
+            logger.debug(_)
+            QMessageBox.information(self, "Hint", _)
+            self.log_message(ic.format(_))
             return None
 
         # para tab 1 or sent tab 2
@@ -2173,15 +2510,21 @@ class MyWindow(QMainWindow):
 
         # popup??
 
+        # self.srclang != self.tgtlang and bool(self.srclang) and bool(self.tgtlang)
         if not (
-            self.srclang != self.tgtlang and bool(self.srclang) and bool(self.tgtlang)
+            bool(self.srclang) and bool(self.tgtlang)
         ):  # noqa
             logger.warning(
                 " self.srclang, self.tgtlang: %s, %s are the same...",
                 self.srclang,
                 self.tgtlang,
             )  # noqa
-            logger.warning(" Something is not quite right, exiting...")
+            # logger.warning(" Something is not quite right, exiting...")
+
+            # switch to log
+            self.tabWidget.setCurrentIndex(3)
+            _ = f"self.srclang: [{self.srclang}], self.tgtlang: [{self.tgtlang}]..."
+            self.log_message(ic.format(_))
             return None
 
         # ==========================

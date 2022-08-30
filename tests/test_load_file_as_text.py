@@ -1,7 +1,6 @@
 """Test load_file_as_text."""
-from ptextpad.loadtext import loadtext
-
 from ptextpad.load_file_as_text import load_file_as_text
+from ptextpad.loadtext import loadtext
 
 
 def test1():

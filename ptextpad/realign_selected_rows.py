@@ -18,14 +18,16 @@ def realign_selected_rows(self, srclang="english", tgtlang="chinese"):
         (self.tableView_3)
     """
 
-    indices = self.tableview.selectionModel().selectedRows()
+    # indices = self. tableview.selectionModel().selectedRows()
+    indices = self.selectionModel().selectedRows()
 
     rows = []
     for elm in indices:
         rows += [elm.row()]
     LOGGER.info("Seleced rows: %s ", rows)
 
-    currindex = self.tableview.currentIndex()
+    # currindex = self. tableview.currentIndex()
+    currindex = self.currentIndex()
     currentrow = currindex.row()
 
     # select last continuous bacth of rows

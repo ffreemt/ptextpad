@@ -63,7 +63,8 @@ class MyTable(QTableView):  # ok
     # def __init__(self, parent=None, myarray=MY_ARRAY, *args):
     # def __init__(self, parent=None, myarray=[['a', 'aa', 0.5]], vh=56, *args):
     # def __init__(self, parent=None, myarray=MY_ARRAY, vh=56, *args):
-    def __init__(self, *args, myarray=MY_ARRAY, vh=56, **kwargs):
+    # 12*7 = 84,  12 * 8 = 96
+    def __init__(self, *args, myarray=MY_ARRAY, vh=84, **kwargs):
         """Init."""
         # def __init__(self, parent=None, myarray=[['', '']], *args):
         # super(MyWindow, self).__init__()
@@ -150,26 +151,6 @@ class MyTable(QTableView):  # ok
 
         # self.layout.addWidget(self.button1)
         # self.setLayout(self.layout)
-
-    def test(self):
-        """Test."""
-        # qDebug("\nMyTable.test: print_var_name(self) %s, self.myarray %s " % (print_var_name(self), self.myarray))  # noqa
-        qDebug("\nMyTable.test: self.myarray %s " % (self.myarray))
-
-        index = self.tableview.currentIndex()
-        item = self.tablemodel.data(index, Qt.DisplayRole)
-
-        qDebug("item %s " % item)
-
-        # qDebug(" <test><MyDelegate> self.delegate.cursormy: %s " % self.delegate.cursormy)
-        qDebug(
-            " <test><MyDelegate> self.delegate.textcursor: %s "
-            % self.delegate.textcursor
-        )  # noqa
-
-        # self.delegate.textcursor.paste()
-
-        qDebug("1 %s ==\n" % self.myarray)
 
 
 class MyTableModel(QAbstractTableModel):

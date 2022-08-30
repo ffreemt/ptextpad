@@ -61,7 +61,9 @@ class WorkerSignals(QObject):
     finished = pyqtSignal()
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)
-    progress = pyqtSignal(dict)  # thread_ident, max_step, step, done
+    progress = pyqtSignal(dict)
+    # progress: thread_ident, max_step, step, done, log_message
+    # (for log tab self.plainTextEditLog.appendPlainText(msg))
 
 
 class Worker(QRunnable):
@@ -93,18 +95,28 @@ class Worker(QRunnable):
         # Add the callback to our kwargs
         self.kwargs["progress_callback"] = self.sig.progress
 
+        # data, key: thread_ident {result: done: aborted:}
+        self.data = {}
+
     @pyqtSlot()
     def run(self):
         """Initialize the runner function with passed args, kwargs."""
         # Retrieve args/kwargs here; and fire processing using them
         try:
+            logger.debug(" result = self.fn(*self.args, **self.kwargs) ")
+
             result = self.fn(*self.args, **self.kwargs)
+
+            logger.debug("self.fn.__name__: %s", self.fn.__name__)
+            logger.debug("type(result): %s", type(result))
         except Exception as exc:
             logger.error(" fn error: %s", exc)
             traceback.print_exc()
             exctype, value = sys.exc_info()[:2]
             self.sig.error.emit((exctype, value, traceback.format_exc()))
         else:
+            logger.debug("self.sig.result.emit(result)")
             self.sig.result.emit(result)  # Return the result of the processing
         finally:
+            logger.debug("self.sig.finished.emit() ")
             self.sig.finished.emit()  # Done

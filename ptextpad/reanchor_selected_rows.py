@@ -15,8 +15,7 @@ LOGGER.addHandler(logging.NullHandler())
 
 # def realign_selected_rows(self, srclang='english', tgtlang='chinese'):
 def reanchor_selected_rows(self, srclang="english", tgtlang="chinese"):
-    """
-    Reanachor selected rows.
+    """Re-anachor selected rows.
 
     Calling seq: reanchor_selected_rows(self.tableView_2)
 
@@ -25,15 +24,17 @@ def reanchor_selected_rows(self, srclang="english", tgtlang="chinese"):
 
     Refer to realign_selected_rows
     """
-
-    indices = self.tableview.selectionModel().selectedRows()
+    # indices = self.tableview.selectionModel().selectedRows()
+    # self is already a tableview
+    indices = self.selectionModel().selectedRows()
 
     rows = []
     for elm in indices:
         rows += [elm.row()]
     LOGGER.info("Seleced rows: %s ", rows)
 
-    currindex = self.tableview.currentIndex()
+    # currindex = self.tableview.currentIndex()
+    currindex = self.currentIndex()
     currentrow = currindex.row()
 
     # select last continuous bacth of rows

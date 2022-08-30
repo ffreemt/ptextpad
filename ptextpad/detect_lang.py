@@ -6,8 +6,10 @@ detct as Chinese if chinese_char_ratio>= threthold else dectect_language()
 # import logging
 from typing import Optional
 
+import logzero
 from fastlid import fastlid
 from logzero import logger
+from set_loglevel import set_loglevel
 
 
 def detect_lang(text1: str, checklen: Optional[int] = None) -> str:
@@ -38,5 +40,7 @@ def detect_lang(text1: str, checklen: Optional[int] = None) -> str:
         detected = fastlid(text0)[0]
     except Exception as exc:
         logger.warning(" fastlid failed: %s, set to en", exc)
+    # due to a logzero.setup_default_logger/loglevel(20) used in fastlid in 0.1.7
+    logzero.loglevel(set_loglevel())
 
     return detected

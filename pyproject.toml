@@ -27,6 +27,7 @@ nose = "^1.3.7"
 seg-text = "^0.1.2"
 requests = "^2.28.1"
 nltk = "^3.7"
+stop-thread = "^0.1.0"
 
 [tool.poe.executor]
 type = "poetry"
@@ -35,7 +36,7 @@ type = "poetry"
 memo = "echo poe test or poetry run poe test"
 test = "pytest tests"
 pyright = "pyright ptextpad"
-flake8 = "flake8 ptextpad --ignore F401,E501,F841"
+flake8 = "flake8 ptextpad --ignore F401,E501,F841,E203,W503"
 check = ["pyright", "flake8"]
 export = "poetry export --without-hashes -f requirements.txt -o requirements.txt"
 build = "poetry build"
