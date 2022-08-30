@@ -3,9 +3,11 @@ import logging
 import os
 
 import docx
-# from nose.tools import eq_, with_setup
 
 from .logging_progress import logging_progress as progress
+
+# from nose.tools import eq_, with_setup
+
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

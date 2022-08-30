@@ -4,10 +4,11 @@
 import logging
 import sys
 
-# from neualigner.testdebug import testdebug  # testing logging
-
 # QtCore,
 from PyQt5 import QtGui, QtWidgets
+
+# from neualigner.testdebug import testdebug  # testing logging
+
 
 # ~ from PyQt4 import QtCore, QtGui
 

@@ -9,9 +9,11 @@ import re
 
 import chardet
 from html2text import html2text
-# from nose.tools import eq_, with_setup
 
 from .post_process import post_process
+
+# from nose.tools import eq_, with_setup
+
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

@@ -1,7 +1,7 @@
 """Open files."""
-from typing import Tuple, Optional
-import os
 import logging
+import os
+from typing import Optional, Tuple
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

@@ -8,6 +8,7 @@ import logging
 
 import lxml.etree as et
 import tqdm
+
 from .tqdmlogginghandler import TqdmLoggingHandler
 
 LOGGER = logging.getLogger(__name__)

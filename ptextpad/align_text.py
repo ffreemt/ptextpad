@@ -1,21 +1,20 @@
 """Align texts (srctext, tgttext, srclang=srclang, tgtlang=tgtlang)."""
 import logging
 
-# from nose.tools import (eq_, with_setup)
-
 # from .seg_sent import seg_sent
 from seg_text import seg_text as seg_sent
 
-from .detect_lang import detect_lang
-
 # from .para_gc import align_blocks_final
 from .align_blocks_final import align_blocks_final
-
+from .detect_lang import detect_lang
 from .load_text import load_text
+from .zip_longest_middle import zip_longest_middle
+
+# from nose.tools import (eq_, with_setup)
+
 
 # from para_gc import check_avec
 
-from .zip_longest_middle import zip_longest_middle
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

@@ -51,7 +51,6 @@ def para_cosine(seq1, seq2, extra0, lang="chinese"):
     LOGGER.debug("^ ^")
     return ccmatrix
 
-
     _ = r"""
     file1 = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\files_for_testing_load\Folding_Beijing_ch1-zh.txt'  # noqa
     file2 = r'D:\dl\Dropbox\mat-dir\snippets-mat\pyqt\Sandbox\files_for_testing_load\Folding_Beijing_ch1-en.txt'  # noqa
@@ -81,11 +80,11 @@ def para_cosine(seq1, seq2, extra0, lang="chinese"):
 def main():
     """main."""
 
-    from get_para import get_enzhfiles
+    import pickle
 
+    from get_para import get_enzhfiles
     from glcnpara import glcnpara
     from youdao_tr_list import youdao_tr_list
-    import pickle
 
     enfile = "26-40-en.txt"
     zhfile = "26-40-zh.txt"

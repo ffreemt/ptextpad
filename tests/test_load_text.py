@@ -18,10 +18,7 @@ def testgb():
     r"""
     Tests  D:\dl\Dropbox\shuangyu_ku\txt-books\19部世界名著中英文对照版TXT
     """
-    file = (
-        r"C:\dl\Dropbox\shuangyu_ku\txt-books\19部世界名著中英文对照版TXT"
-        r"\爱丽丝漫游奇境记.txt"
-    )
+    file = r"C:\dl\Dropbox\shuangyu_ku\txt-books\19部世界名著中英文对照版TXT" r"\爱丽丝漫游奇境记.txt"
     file = "data/爱丽丝漫游奇境记.txt"
     text = load_text(file)
     assert len(text) >= 188763

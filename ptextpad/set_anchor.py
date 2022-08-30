@@ -7,10 +7,11 @@ TODO: need to rewrite (refer to set_anchor_extra_outputs.py)
 """
 import logging
 
+from .get_anchor_set import get_anchor_set
+from .zip_longest_middle import zip_longest_middle
+
 # from nose.tools import (eq_, with_setup)
 
-from .zip_longest_middle import zip_longest_middle
-from .get_anchor_set import get_anchor_set
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

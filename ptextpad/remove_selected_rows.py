@@ -54,7 +54,7 @@ def remove_selected_rows(self):
         self.tablemodel.layoutAboutToBeChanged.emit()
         for elm in reversed_rows:
             self.tablemodel.arraydata = (
-                self.tablemodel.arraydata[:elm] + self.tablemodel.arraydata[elm + 1:]
+                self.tablemodel.arraydata[:elm] + self.tablemodel.arraydata[elm + 1 :]
             )  # noqa okok
 
             # self.tablemodel.arraydata = [['0', '0', '0']]  # okok
@@ -73,7 +73,7 @@ def remove_selected_rows(self):
         # logger.debug("==>arraydata: %s", self.tablemodel.arraydata)  # to be removed
         self.tablemodel.layoutAboutToBeChanged.emit()
         self.tablemodel.arraydata = (
-            self.tablemodel.arraydata[:idxi] + self.tablemodel.arraydata[idxi + 1:]
+            self.tablemodel.arraydata[:idxi] + self.tablemodel.arraydata[idxi + 1 :]
         )  # noqa okok
         self.tablemodel.layoutChanged.emit()
         logger.info("%s-th row removed.", idxi + 1)

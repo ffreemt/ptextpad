@@ -9,13 +9,14 @@ import chardet
 # import pysrt
 import pysubs2
 
+# from element_to_string import element_to_string
+from .detect_file import detect_file
+from .srt_to_txt import srt_to_txt
+
 # from lxml import etree
 # import zipfile
 # from nose.tools import eq_, with_setup
 
-# from element_to_string import element_to_string
-from .detect_file import detect_file
-from .srt_to_txt import srt_to_txt
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

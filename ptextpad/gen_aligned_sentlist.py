@@ -53,8 +53,8 @@ def gen_aligned_sentlist(
     for anchor in anchor_set:
 
         LOGGER.debug(" anchor %s", anchor)
-        srctextlist = [elm[0] for elm in inlist[anchor0 + 1: anchor]]
-        tgttextlist = [elm[1] for elm in inlist[anchor0 + 1: anchor]]
+        srctextlist = [elm[0] for elm in inlist[anchor0 + 1 : anchor]]
+        tgttextlist = [elm[1] for elm in inlist[anchor0 + 1 : anchor]]
 
         srctext = ""
         for elm in srctextlist:
@@ -120,8 +120,8 @@ def gen_aligned_sentlist(
 
     # possible tail
     if anchor0 < len(inlist) - 1:  # anchor0 + 1 <= len(inlist) - 1
-        srctextlist = [elm[0] for elm in inlist[anchor0 + 1:]]
-        tgttextlist = [elm[1] for elm in inlist[anchor0 + 1:]]
+        srctextlist = [elm[0] for elm in inlist[anchor0 + 1 :]]
+        tgttextlist = [elm[1] for elm in inlist[anchor0 + 1 :]]
 
         srctext = ""
         for elm in srctextlist:

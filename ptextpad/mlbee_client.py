@@ -1,7 +1,8 @@
 """Wrap radio_mlbee_client with runnable.Worker."""
 import threading
-from logzero import logger
+
 from icecream import ic
+from logzero import logger
 from radio_mlbee_client import radio_mlbee_client
 
 

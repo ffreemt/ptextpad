@@ -5,9 +5,10 @@ set_anchor: Set an anchor on an nx3 list.
 """
 import logging
 
+from .zip_longest_middle import zip_longest_middle
+
 # from nose.tools import (eq_, with_setup)
 
-from .zip_longest_middle import zip_longest_middle
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

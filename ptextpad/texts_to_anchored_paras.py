@@ -8,18 +8,20 @@ get_para.
 Refer to set_anchors.py
 """
 import logging
-from set_loglevel import set_loglevel
+
 from logzero import logger
+from set_loglevel import set_loglevel
 
 from .align_sent import ccmatrix_th
 from .detect_lang import detect_lang
 from .load_text import load_text
 from .para_cosine_rev import para_cosine
 from .text_to_paras import text_to_paras
-# from .youdao_tr_list import youdao_tr_list
 
 # from itertools import zip_longest
 from .zip_longest_middle import zip_longest_middle
+
+# from .youdao_tr_list import youdao_tr_list
 
 
 def texts_to_anchored_paras(text1, text2, tgtlang=None):
@@ -89,8 +91,8 @@ def texts_to_anchored_paras(text1, text2, tgtlang=None):
     for pos in range(lencc):
         # aligned_seqs += zip_longest_middle(seq1[ppos1:ccmatrixij0[pos][0]], seq2[ppos2:ccmatrixij0[pos][1]], fillvalue='')  # noqa
         aligned_seqs += zip_longest_middle(
-            seq1[ppos1: ccmatrixij0[pos][0]],
-            seq2[ppos2: ccmatrixij0[pos][1]],
+            seq1[ppos1 : ccmatrixij0[pos][0]],
+            seq2[ppos2 : ccmatrixij0[pos][1]],
             fillvalue="",
         )  # noqa
         ppos1 = ccmatrixij0[pos][0]
@@ -112,8 +114,8 @@ def texts_to_anchored_paras(text1, text2, tgtlang=None):
     for pos in range(lencc):
         # dummy_seqs += zip_longest_middle(seq1[ppos1:ccmatrixij0[pos][0]], seq2[ppos2:ccmatrixij0[pos][1]], fillvalue='')
         dummy_seqs += zip_longest_middle(
-            seq1[ppos1: ccmatrixij0[pos][0]],
-            seq2[ppos2: ccmatrixij0[pos][1]],
+            seq1[ppos1 : ccmatrixij0[pos][0]],
+            seq2[ppos2 : ccmatrixij0[pos][1]],
             fillvalue="",
         )
         ppos1 = ccmatrixij0[pos][0]

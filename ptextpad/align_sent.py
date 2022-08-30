@@ -3,13 +3,15 @@
 """
 align_sent
 """
+import imp
+import logging
+
 # based on tryrun_para.py
 import os
-import sys
-import logging
-import imp
-import time
 import pickle  # needed by para_cosine.py
+import sys
+import time
+
 import numpy as np
 
 try:
@@ -20,6 +22,17 @@ except ImportError:
 
 # import vec_cosine
 # from vec_cosine import *
+
+# needed by vec_cosine.py
+import collections
+import math
+import re
+
+import jieba
+from logzero import logger
+from nltk.translate.gale_church import align_blocks
+
+from .get_para import get_enzhfiles
 
 # from seg_ensent import seg_ensent
 from .seg_xysent import seg_xysent as seg_ensent  # 080modi
@@ -36,17 +49,6 @@ from .seg_zhsent import seg_zhsent
 # from para_cosine import para_cosine
 # from glcnpara import glcnpara
 
-from .get_para import get_enzhfiles
-
-from logzero import logger
-from nltk.translate.gale_church import align_blocks
-
-# needed by vec_cosine.py
-import collections
-import math
-
-import jieba
-import re
 
 # import smallseg_rev as smallseg
 # import smallseg
@@ -388,7 +390,9 @@ def save_sents(ecsents_batch, output12, output1, output2, overwrite=False):
     logger.addHandler(logging.NullHandler())
     # logger.setLevel(logging.DEBUG)
 
-    logger.debug("output12 {} output1 {} output2 {} ".format(output12, output1, output2))
+    logger.debug(
+        "output12 {} output1 {} output2 {} ".format(output12, output1, output2)
+    )
 
     # ofile = os.path.abspath(ofile)
     # dirname,filename=os.path.split(ofile)
@@ -421,7 +425,7 @@ def save_sents(ecsents_batch, output12, output1, output2, overwrite=False):
             logger.info(
                 " File ",
                 output1,
-                " already exists. Delete or rename the file and retry..."
+                " already exists. Delete or rename the file and retry...",
             )
             return None
 
@@ -432,7 +436,7 @@ def save_sents(ecsents_batch, output12, output1, output2, overwrite=False):
             logger.info(
                 " File ",
                 output2,
-                " already exists. Delete or rename the file and retry..."
+                " already exists. Delete or rename the file and retry...",
             )
             return None
 
@@ -608,7 +612,6 @@ def text_to_vector(
     import string
 
     # words = text.split()
-
     # refer to detect_language.py
     tokens = wordpunct_tokenize(text)
     words = [word.lower() for word in tokens]

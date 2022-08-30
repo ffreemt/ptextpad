@@ -2,11 +2,12 @@
 
 # [http://stackoverflow.com/questions/380603/how-do-i-get-the-whole-text-of-an-element-using-elementtree]
 
+import logging
+
 import lxml
 
 # from lxml import etree
 
-import logging
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

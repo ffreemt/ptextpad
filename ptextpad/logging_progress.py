@@ -1,6 +1,6 @@
 """Log progress."""
-from time import sleep
 import logging
+from time import sleep
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

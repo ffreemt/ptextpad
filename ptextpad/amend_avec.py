@@ -1,7 +1,9 @@
+import logging
+
 from .para_gc import align_blocks_modi
+
 # from para_gc import check_avec
 
-import logging
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())

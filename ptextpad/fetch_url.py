@@ -1,15 +1,15 @@
 """Fetch content from url."""
 import logging
 
-from .fetch_xpath import fetch_xpath
-
 # ~ from PyQt4.QtGui import QMainWindow, QIcon
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow
-from .text_to_paras import text_to_paras
 
 # import urlxpathtestmainwindow_ui  # okok
 import ptextpad.fetch_url_ui
+
+from .fetch_xpath import fetch_xpath
+from .text_to_paras import text_to_paras
 
 # import requests
 # import requests_cache

@@ -48,7 +48,6 @@ self.plainTextEditLog = QtWidgets.QPlainTextEdit(self.tab_4)
 import logging
 import os
 import sys
-
 from copy import deepcopy
 from itertools import zip_longest
 from pathlib import Path
@@ -59,7 +58,15 @@ import numpy as np
 from icecream import ic
 from logzero import logger
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-from PyQt5.QtCore import QElapsedTimer, QObject, Qt, QThread, QThreadPool, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import (
+    QElapsedTimer,
+    QObject,
+    Qt,
+    QThread,
+    QThreadPool,
+    pyqtSignal,
+    pyqtSlot,
+)
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import (  # noqa
     QApplication,
@@ -70,7 +77,6 @@ from PyQt5.QtWidgets import (  # noqa
     QProgressDialog,
     QSplashScreen,
 )
-
 from radio_mlbee_client import radio_mlbee_client
 from set_loglevel import set_loglevel
 from stop_thread import stop_thread
@@ -79,11 +85,10 @@ from ptextpad import __version__
 from ptextpad.fetch_url import FetchURL
 from ptextpad.help_manual import help_manual
 from ptextpad.load_text import load_text
+from ptextpad.mlbee_client import mlbee_client
 from ptextpad.msg_popup import msg_popup
 from ptextpad.popup_anchortab_dirty import popup_anchortab_dirty
 from ptextpad.qthread_func_with_progressbar import QThreadFuncWithQProgressBar  # noqa
-
-from ptextpad.mlbee_client import mlbee_client
 
 # from .send_to_table import Worker
 from . import send_to_table
@@ -725,7 +730,12 @@ class MyWindow(QMainWindow):
             notext = tgtlang + ":" + srclang
 
             ret_val = msg_popup(
-                title=title, text=text, info=info, details="", ytext=yestext, ntext=notext
+                title=title,
+                text=text,
+                info=info,
+                details="",
+                ytext=yestext,
+                ntext=notext,
             )  # noqa
             # ret_val = msg_popup(title=title, text=text, info=info, details='')  # noqa
 
@@ -1960,9 +1970,7 @@ class MyWindow(QMainWindow):
             msg.setText("You really want to do auto-anchoring?")
 
             api_url_ = "https://hf.space/embed/mikeee/radio-mlbee/+/api/predict/"
-            msg.setInformativeText(
-                f"Auto-anchoring uses a net service at {api_url_}."
-            )
+            msg.setInformativeText(f"Auto-anchoring uses a net service at {api_url_}.")
             msg.setDetailedText(
                 "If you click Yes, autoanchoring will start. (It's "
                 "very important to correct anchors wrongly set by "
@@ -2391,9 +2399,22 @@ class MyWindow(QMainWindow):
         files_to_anchortab  # self.tabWidget.currentIndex() == 0
 
         """
+        from about_time import about_time
         from .reanchor_selected_rows import (
             reanchor_selected_rows,  # will load sseg, takes about 60 sec
         )
+        from .wakeup_mlbee import wakeup_mlbee
+
+        # quick check on/wkaeup mlbee service
+        try:
+            with about_time() as dur:
+                _ = wakeup_mlbee()
+            logger.info("Waking up remote service: %s (took %s)", _, dur.duration_human)
+        except Exception as exc:
+            logger.error(exc)
+            _ = str(exc)
+            self.log_message(ic.format(_))
+            return None
 
         # if self.tabWidget.currentIndex() == 2 or self.tabWidget.currentIndex() == 3:
         _ = self.tabWidget.currentIndex()
@@ -2446,10 +2467,12 @@ class MyWindow(QMainWindow):
         # paras tab or log tab OR sents tab and nothing selected
         if _ in [0, 3] or _ in [2] and not rows_slected:
             _ = f"""You are on {tab_names[_]} tab. Switch to Paras/SetAnchor tab to use this function"""
-            _ = dedent(f"""
+            _ = dedent(
+                f"""
                     In order to use this function, you must be
                     on {tab_names[1]} tab, or on {tab_names[2]} tab with
-                    some row selected.""")
+                    some row selected."""
+            )
             logger.debug(_)
             QMessageBox.information(self, "Hint", _)
             self.log_message(ic.format(_))
@@ -2511,9 +2534,7 @@ class MyWindow(QMainWindow):
         # popup??
 
         # self.srclang != self.tgtlang and bool(self.srclang) and bool(self.tgtlang)
-        if not (
-            bool(self.srclang) and bool(self.tgtlang)
-        ):  # noqa
+        if not (bool(self.srclang) and bool(self.tgtlang)):  # noqa
             logger.warning(
                 " self.srclang, self.tgtlang: %s, %s are the same...",
                 self.srclang,

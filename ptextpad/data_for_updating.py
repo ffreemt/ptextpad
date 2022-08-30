@@ -3,9 +3,10 @@
 Funcitons for gen various ops.
 
 """
-import re
 import logging
+import re
 from itertools import zip_longest
+
 from .update_list import update_list
 
 # from nose.tools import (eq_, with_setup)

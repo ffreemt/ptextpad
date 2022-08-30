@@ -30,9 +30,7 @@ def list_to_csv(paras, filepath="tmpcsv.txt"):
     with open(filepath, "wt", encoding="utf-8") as filehandle:
         # writer = csv.writer(filehandle)
         writer = csv.writer(
-            filehandle, delimiter="\t",
-            doublequote=False,
-            escapechar="\\"
+            filehandle, delimiter="\t", doublequote=False, escapechar="\\"
         )
         # writer = csv.writer(filehandle, delimiter='\t')
         # writer = csv.writer(filehandle, dialect='excel-tab')

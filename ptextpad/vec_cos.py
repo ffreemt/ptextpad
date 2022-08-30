@@ -1,9 +1,9 @@
 """Refer to vec_cos_collections.py for caomparisons
 of various implementations.
 """
+import numpy
 from numpy import inner
 from numpy.linalg import norm
-import numpy
 
 
 def vec_cos(vec1, vec2):

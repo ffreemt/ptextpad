@@ -24,10 +24,11 @@ update_mytable(tableView_2.tablemodel, irow=0, row_numbers=0, rows_to_add=[])?
 import logging
 from copy import deepcopy
 
+from nose.tools import eq_, with_setup
+
 # from PyQt4.QtCore import *
 # from PyQt4.QtGui import *
 
-from nose.tools import eq_, with_setup
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
@@ -255,7 +256,7 @@ def test_op_check():
     ):  # irow + row_numbers >= len0 => row_numbers = len0 - irow
         row_numbers = len0 - irow
 
-    expected = expected[:irow] + rows_to_add + expected[irow + row_numbers:len0]
+    expected = expected[:irow] + rows_to_add + expected[irow + row_numbers : len0]
 
     # with deepcopy
     # out = update_list(list0, irow, row_numbers, rows_to_add)

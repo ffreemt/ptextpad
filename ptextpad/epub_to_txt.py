@@ -6,11 +6,12 @@ import zipfile
 # from element_to_string import element_to_string
 from html2text import html2text
 
+from .post_process import post_process
+
 # from lxml import etree
 # import zipfile
 # from nose.tools import eq_, with_setup
 
-from .post_process import post_process
 
 # import re
 

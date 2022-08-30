@@ -1,10 +1,13 @@
 """
 Calculate the cosine of two vectors.
 """
-import logging
 import collections
-import re
+import logging
 import math
+import re
+
+# use jieba
+import jieba as SSEG
 
 # from stopwords import get_stopwords
 
@@ -13,8 +16,6 @@ import math
 
 # from sseg import SSEG  # SSEG: instance SSEG = SEG(), SSEG.cut(text)
 
-# use jieba
-import jieba as SSEG
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

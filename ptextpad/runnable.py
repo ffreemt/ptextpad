@@ -58,6 +58,7 @@ class WorkerSignals(QObject):
         error
             tuple (exctype, value, traceback.format_exc() )
     """
+
     finished = pyqtSignal()
     error = pyqtSignal(tuple)
     result = pyqtSignal(object)

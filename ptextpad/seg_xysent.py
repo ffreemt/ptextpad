@@ -1,25 +1,24 @@
-'''Segment non chinese.'''
-import os
+"""Segment non chinese."""
 import logging
-# from nose.tools import (eq_, with_setup)
+import os
 
 # from pkg_resources import resource_stream
 import pickle
+
+# from nose.tools import (eq_, with_setup)
+
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())
 
 
 # def seg_xysent(text, language='english')->"tokenizer.tokenize(text)":
-def seg_xysent(text, language='english'):
-    '''Segment New seg_xysent.'''
+def seg_xysent(text, language="english"):
+    """Segment New seg_xysent."""
     global TOK
     # from entokenizer import ENTOK as TOK
-    langset = [
-        'english', 'french', 'italian', 'portugese', 'spanish',
-        'german'
-    ]
-    '''
+    langset = ["english", "french", "italian", "portugese", "spanish", "german"]
+    """
     lang_abbr = ['EN', 'FR', 'IT', 'PT', 'ES', 'DE']
     lang_dict = dict(zip(langset, lang_abbr))
 
@@ -29,23 +28,23 @@ def seg_xysent(text, language='english'):
         TOK = importlib.import_module(abbr.lower() + 'tokenizer')
         tokenizer = getattr(TOK, abbr + 'TOK')
         print(abbr, tokenizer.tokenize(test))
-    '''
+    """
 
     if language not in langset:
-        language = 'english'
+        language = "english"
 
     # LOGGER.debug(" languge: %s", language)
     # LOGGER.debug(" type(TOK): %s", type(TOK))
 
-    if language == 'english':
+    if language == "english":
         from entokenizer import ENTOK as TOK
-    elif language == 'german':
+    elif language == "german":
         from detokenizer import DETOK as TOK
-    elif language == 'french':
+    elif language == "french":
         from frtokenizer import FRTOK as TOK
-    elif language == 'portugese':
+    elif language == "portugese":
         from pttokenizer import PTTOK as TOK
-    elif language == 'italian':
+    elif language == "italian":
         from ittokenizer import ITTOK as TOK
     else:  # language == 'spanish'
         from estokenizer import ESTOK as TOK
@@ -63,31 +62,32 @@ def seg_xysent(text, language='english'):
 
 
 def my_setup():
-    fmt = '%(name)s-%(filename)s[ln:%(lineno)d]:'
-    fmt += '%(levelname)s: %(message)s'
+    fmt = "%(name)s-%(filename)s[ln:%(lineno)d]:"
+    fmt += "%(levelname)s: %(message)s"
     logging.basicConfig(format=fmt, level=logging.DEBUG)
 
 
 # @with_setup(my_setup)
 def test_():
-    ''' test_.'''
-    sents = seg_xysent('this is a test. another sentence.')
-    assert 'this is a test.' == sents[0]
-    assert 'another sentence.' == sents[1]
+    """test_."""
+    sents = seg_xysent("this is a test. another sentence.")
+    assert "this is a test." == sents[0]
+    assert "another sentence." == sents[1]
 
 
 # @with_setup(my_setup)
 def test_foldingbj():
-    ''' test_foldingbj.'''
-    from tqdm import tqdm
+    """test_foldingbj."""
     import re
     import time
 
-    file = r'D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en.txt'  # noqa
+    from tqdm import tqdm
+
+    file = r"D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en.txt"  # noqa
     time1 = time.time()
 
     sents = []
-    with open(file, 'r', encoding='utf8') as filehandle:
+    with open(file, "r", encoding="utf8") as filehandle:
         for idx, elm in enumerate(tqdm(filehandle.readlines())):
             sents += seg_xysent(elm.strip())
     assert 1112 == len(sents)
@@ -95,10 +95,10 @@ def test_foldingbj():
     LOGGER.debug("\n   1 Time used: %s", time.time() - time1)
     # 10 times faster!
     time1 = time.time()
-    sents0 = seg_xysent(open(file, 'r', encoding='utf8').read().strip())
+    sents0 = seg_xysent(open(file, "r", encoding="utf8").read().strip())
     sents1 = []
     for elm in sents0:
-        sents1 += re.split(r'\n+', elm)
+        sents1 += re.split(r"\n+", elm)
 
     time1 = time.time()
     assert sents == sents1
@@ -108,32 +108,32 @@ def test_foldingbj():
 
 # @with_setup(my_setup)
 def test_foldingbj1():
-    """ test_foldingbj1."""
+    """test_foldingbj1."""
     # from tqdm import tqdm
     import re
     import time
 
-    file = r'D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en.txt'  # noqa
+    file = r"D:\dl\Dropbox\shuangyu_ku\txt-books\Folding_Beijing-en.txt"  # noqa
 
     time1 = time.time()
     # much faster!
-    texten = open(file, 'r', encoding='utf8').read().strip()
-    paras = re.split(r'\n+', texten)
+    texten = open(file, "r", encoding="utf8").read().strip()
+    paras = re.split(r"\n+", texten)
 
-    texten0 = re.sub(r'\n+', '_par_.', texten)
+    texten0 = re.sub(r"\n+", "_par_.", texten)
 
     sents0 = seg_xysent(texten0)
 
-    text_res = '_sent_'.join(sents0)
-    para_sents = text_res.split('_par_.')
+    text_res = "_sent_".join(sents0)
+    para_sents = text_res.split("_par_.")
 
     sents2 = []
     for elm in para_sents:
-        sents2 += elm.split('_sent_')
+        sents2 += elm.split("_sent_")
 
     para_sents_seg = []
     for elm in para_sents:
-        para_sents_seg.append(elm.split('_sent_'))
+        para_sents_seg.append(elm.split("_sent_"))
 
     LOGGER.debug(" 3 Time used: %s", time.time() - time1)
     assert 294 == len(para_sents_seg)

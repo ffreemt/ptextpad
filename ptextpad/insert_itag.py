@@ -48,4 +48,4 @@ def insert_itag(
     lines[pos1] = insert_itag(lines[pos1], pos2, itag)
 
     # reassemble
-    return "\n".join(lines[:pos1] + [lines[pos1]] + lines[pos1 + 1:])
+    return "\n".join(lines[:pos1] + [lines[pos1]] + lines[pos1 + 1 :])

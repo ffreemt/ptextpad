@@ -3,8 +3,9 @@
 Moved from para_gc.py
 """
 from logzero import logger
-from .para_gc import align_blocks_modi, check_avec
+
 from .amend_avec import amend_avec
+from .para_gc import align_blocks_modi, check_avec
 
 
 def align_blocks_final(s1, s2):

@@ -18,3 +18,10 @@ python -m ptextpad
 # or
 # ptextpad
 ```
+
+Set `LOGLEVEL=10` to see loads of debug messages, e.g.
+```shell
+set LOGLEVEL=10  
+# linux/mac: export LOGLEVEL=10
+python -m ptextpad
+```

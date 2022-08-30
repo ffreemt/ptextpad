@@ -5,11 +5,11 @@ Check repeated entries in the target column; remove empty rows and align, auxch.
 seg_sent, align_sent)
 """
 import logging
+
 from nose.tools import eq_, with_setup
 
 # from seg_sent import seg_sent
 from .align_text import align_text
-
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

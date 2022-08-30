@@ -2,8 +2,6 @@
 import logging
 import sys
 
-# from nose.tools import eq_, with_setup
-
 # from PyQt4 import QtCore, QtGui
 from PyQt5 import QtCore, QtWidgets
 
@@ -12,7 +10,11 @@ import ptextpad.minifuncwrapper as mini
 
 # import mypyqt.myqprogressbar
 from ptextpad.myqprogressbar import MyQProgressBar
+
 from .csv_to_list import csv_to_list
+
+# from nose.tools import eq_, with_setup
+
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.addHandler(logging.NullHandler())

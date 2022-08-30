@@ -72,7 +72,7 @@ def reanchor_selected_rows(self, srclang="english", tgtlang="chinese"):
         self.tablemodel.layoutAboutToBeChanged.emit()
         for elm in reversed_rows:
             self.tablemodel.arraydata = (
-                self.tablemodel.arraydata[:elm] + self.tablemodel.arraydata[elm + 1:]
+                self.tablemodel.arraydata[:elm] + self.tablemodel.arraydata[elm + 1 :]
             )  # noqa okok
 
         self.tablemodel.layoutChanged.emit()

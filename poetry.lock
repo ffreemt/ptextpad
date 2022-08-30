@@ -1,4 +1,12 @@
 [[package]]
+name = "about-time"
+version = "4.1.0"
+description = "Easily measure timing and throughput of code blocks, with beautiful human friendly representations."
+category = "main"
+optional = false
+python-versions = ">=3.7, <4"
+
+[[package]]
 name = "anyio"
 version = "3.6.1"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
@@ -899,9 +907,10 @@ setuptools-rust = ">=0.10.2"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.3"
-content-hash = "ad580c890fb6d233b37c908d0a26c6706c4f1ebcb81dad6be9f275bdf32a3140"
+content-hash = "9556b74e3323205134b44505f21d33689009943328faf9a211cc3923b828b50d"
 
 [metadata.files]
+about-time = []
 anyio = []
 asttokens = []
 atomicwrites = []
