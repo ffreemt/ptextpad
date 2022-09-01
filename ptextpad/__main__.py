@@ -78,6 +78,7 @@ from PyQt5.QtWidgets import (  # noqa
     QSplashScreen,
 )
 from radio_mlbee_client import radio_mlbee_client
+from seg_text import seg_text
 from set_loglevel import set_loglevel
 from stop_thread import stop_thread
 
@@ -111,6 +112,8 @@ from .logging_progress import logging_progress
 from .realign_selected_rows import realign_selected_rows
 from .remove_selected_rows import remove_selected_rows
 from .runnable import Worker as RWorker
+from .qdialog_ptextpad import QDialog_Ptextpad
+
 from .sep_chinese import sep_chinese
 
 # from texts_to_anchored_paras import texts_to_anchored_paras
@@ -1960,7 +1963,7 @@ class MyWindow(QMainWindow):
             return None
 
         if text1.strip() and text2.strip():
-
+            _ = """
             # msgpopup to ask for non network
             msg = QMessageBox()
             msg.setWindowTitle("Wait...")
@@ -1990,8 +1993,19 @@ class MyWindow(QMainWindow):
             if ret_val == QMessageBox.Cancel:  # do nothing
                 self.actionAnchor.setEnabled(True)
                 return None
+            # """
 
             # langid.set_languages()
+
+            # refer to pyqt5-env\editor_app.py -n50
+            dialog = QDialog_Ptextpad(self)
+
+            _ = dialog.exec()
+            if not _:
+                ic("Canceled")
+                return None
+            cb1_split_to_sents = dialog.cb1_split_to_sents.isChecked()
+            cb2_autoanchor = dialog.cb2_autoanchor.isChecked()
 
             self.srclang = detect_lang(text1[:2000])
             self.tgtlang = detect_lang(text2[:2000])
@@ -1999,8 +2013,31 @@ class MyWindow(QMainWindow):
                 "self.srclang: %s, self.tgtlang: %s", self.srclang, self.tgtlang
             )
 
+            logger.debug(" cb1_split_to_sents: %s", cb1_split_to_sents)
+            if cb1_split_to_sents:
+                # TODO split to sents
+                try:
+                    # need to be text format for radio_mlbee_client
+                    text1 = "\n".join(seg_text(text1, lang=self.srclang))
+                except Exception as exc:
+                    logger.error("split text1 exc: %s", exc)
+                    _ = f"split text1 exc: {exc}"
+                    self.log_message(ic.format(_))
+                    QMessageBox.warning(self, "Hint", ic.format(_))
+                    return None
+                try:
+                    # need to be text format for radio_mlbee_client
+                    text2 = "\n".join(seg_text(text2, lang=self.tgtlang))
+                except Exception as exc:
+                    logger.error("split text2 exc: %s", exc)
+                    _ = f"split text2 exc: {exc}"
+                    self.log_message(ic.format(_))
+                    QMessageBox.warning(self, "Hint", ic.format(_))
+                    return None
+
             # no auto, simple zip_longest_middle
-            if ret_val == QMessageBox.No:
+            # if ret_val == QMessageBox.No:
+            if not cb2_autoanchor:
                 # text1 = self.text1[:]
                 # text2 = self.text2[:]
                 para1 = text_to_paras(text1)
@@ -2414,7 +2451,12 @@ class MyWindow(QMainWindow):
             logger.error(exc)
             _ = str(exc)
             self.log_message(ic.format(_))
-            return None
+
+            _ = dedent(f"""
+                Unable to contact network service: {_}. You will only be able to use manual-anchoring in the following.
+                """)
+            QMessageBox.warning(self, "Hint", ic.format(_))
+            # return None
 
         # if self.tabWidget.currentIndex() == 2 or self.tabWidget.currentIndex() == 3:
         _ = self.tabWidget.currentIndex()
